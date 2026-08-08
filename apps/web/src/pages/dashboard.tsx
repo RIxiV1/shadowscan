@@ -1,13 +1,4 @@
-import {
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  Database,
-  FileWarning,
-  Gauge,
-  ShieldAlert,
-  Upload,
-} from 'lucide-react';
+import { AlertTriangle, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DailyUsageChart } from '@/components/charts/daily-usage-chart';
@@ -22,26 +13,35 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatNumber } from '@/lib/format';
 import { useDashboard } from '@/lib/queries';
+import { cn } from '@/lib/utils';
 
 const WINDOWS = [
-  { value: '7', label: 'Last 7 days' },
-  { value: '30', label: 'Last 30 days' },
-  { value: '90', label: 'Last 90 days' },
-  { value: '365', label: 'Last 12 months' },
+  { value: '7', label: '7 days' },
+  { value: '30', label: '30 days' },
+  { value: '90', label: '90 days' },
+  { value: '365', label: '12 months' },
 ];
+
+const BAND_TEXT = {
+  low: 'text-risk-low',
+  medium: 'text-risk-medium',
+  high: 'text-risk-high',
+  critical: 'text-risk-critical',
+} as const;
+
 export function DashboardPage(): JSX.Element {
   const [days, setDays] = useState('30');
   const { data, isPending, isError, error, refetch } = useDashboard(Number(days));
 
-  const filter = (
+  const picker = (
     <Select value={days} onValueChange={setDays}>
-      <SelectTrigger className="w-40">
+      <SelectTrigger className="w-28">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {WINDOWS.map((window) => (
-          <SelectItem key={window.value} value={window.value}>
-            {window.label}
+        {WINDOWS.map((w) => (
+          <SelectItem key={w.value} value={w.value}>
+            {w.label}
           </SelectItem>
         ))}
       </SelectContent>
@@ -51,8 +51,8 @@ export function DashboardPage(): JSX.Element {
   if (isPending) {
     return (
       <>
-        <PageHeader title="Overview" description="AI exposure across your organisation." actions={filter} />
-        <LoadingRows rows={8} className="rounded-xl border border-line bg-surface" />
+        <PageHeader title="Overview" actions={picker} />
+        <LoadingRows rows={8} className="rounded-[3px] border border-line bg-surface" />
       </>
     );
   }
@@ -60,7 +60,7 @@ export function DashboardPage(): JSX.Element {
   if (isError) {
     return (
       <>
-        <PageHeader title="Overview" actions={filter} />
+        <PageHeader title="Overview" actions={picker} />
         <Card>
           <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />
         </Card>
@@ -69,17 +69,16 @@ export function DashboardPage(): JSX.Element {
   }
 
   const { cards, trends } = data;
-  const hasData = cards.aiRequests > 0 || cards.uploads > 0;
 
-  if (!hasData) {
+  if (cards.aiRequests === 0 && cards.uploads === 0) {
     return (
       <>
-        <PageHeader title="Overview" description="AI exposure across your organisation." actions={filter} />
+        <PageHeader title="Overview" actions={picker} />
         <Card>
           <EmptyState
             icon={Upload}
             title="No telemetry yet"
-            description="Upload a browser history export, proxy log or CASB report to start detecting AI usage. ShadowScan parses CSV, JSON, NDJSON and plain-text access logs."
+            description="Upload a browser history export, proxy log or CASB report to start detecting AI usage."
             action={
               <Button asChild variant="primary" size="sm">
                 <Link to="/uploads">Upload a log file</Link>
@@ -92,75 +91,66 @@ export function DashboardPage(): JSX.Element {
   }
 
   const shadowShare = cards.aiRequests === 0 ? 0 : Math.round((cards.shadowAiRequests / cards.aiRequests) * 100);
+  const elevated = data.highRiskActors.filter((a) => a.band === 'high' || a.band === 'critical').length;
 
   return (
     <>
-      <PageHeader
-        title="Overview"
-        description={`AI exposure across your organisation for the ${data.window.days}-day window.`}
-        actions={filter}
-      />
+      <PageHeader title="Overview" actions={picker} />
 
-      {/* Posture first: one number, banded, with the components that produced it. */}
-      <Card className="mb-4 overflow-hidden">
-        <div className="flex flex-wrap items-center gap-6 p-5">
-          <div className="flex items-center gap-4">
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-xl border border-line bg-elevated">
-              <Gauge className="size-7 text-accent" aria-hidden />
+      {/* Score and volume read as one instrument strip rather than six tiles. */}
+      <div className="mb-2 flex flex-col rounded-[3px] border border-line bg-surface xl:flex-row">
+        <div className="flex items-center gap-4 border-line px-4 py-2.5 xl:w-64 xl:border-r">
+          <div>
+            <p className="eyebrow">Risk score</p>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className={cn('tabular text-[34px] font-semibold leading-none', BAND_TEXT[cards.riskBand])}>
+                {cards.riskScore}
+              </span>
+              <span className="text-[12px] text-fg-subtle">/100</span>
+            </div>
+            <div className="mt-1.5">
+              <RiskBandBadge band={cards.riskBand} />
+            </div>
+          </div>
+          <dl className="ml-auto space-y-1 text-right text-[11px] text-fg-subtle">
+            <div>
+              <dt className="inline">unmanaged </dt>
+              <dd className="tabular inline font-medium text-fg-muted">{shadowShare}%</dd>
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-fg-subtle">
-                Organisation risk score
-              </p>
-              <div className="mt-1 flex items-baseline gap-2">
-                <span className="tabular text-3xl font-semibold leading-none">{cards.riskScore}</span>
-                <span className="text-sm text-fg-subtle">/ 100</span>
-                <RiskBandBadge band={cards.riskBand} className="ml-1" />
-              </div>
+              <dt className="inline">exposure </dt>
+              <dd className="tabular inline font-medium text-fg-muted">{formatNumber(cards.sensitiveHits)}</dd>
             </div>
-          </div>
-
-          <div className="grid flex-1 grid-cols-2 gap-x-8 gap-y-2 sm:grid-cols-3">
-            <ScoreComponent label="Unmanaged share" value={`${shadowShare}%`} weight="40%" />
-            <ScoreComponent
-              label="Confidential exposure"
-              value={formatNumber(cards.sensitiveHits)}
-              weight="35%"
-            />
-            <ScoreComponent
-              label="Risk concentration"
-              value={`${data.highRiskActors.filter((actor) => actor.band === 'high' || actor.band === 'critical').length} people`}
-              weight="25%"
-            />
-          </div>
+            <div>
+              <dt className="inline">at risk </dt>
+              <dd className="tabular inline font-medium text-fg-muted">{elevated}</dd>
+            </div>
+          </dl>
         </div>
-      </Card>
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard label="Log rows ingested" value={cards.totalEvents} icon={Database} hint={`${formatNumber(cards.uploads)} uploads`} />
-        <StatCard label="AI requests" value={cards.aiRequests} icon={Activity} trend={trends.aiRequests} />
-        <StatCard
-          label="Shadow AI"
-          value={cards.shadowAiRequests}
-          icon={ShieldAlert}
-          tone={cards.shadowAiRequests > 0 ? 'high' : 'low'}
-          trend={trends.shadowAiRequests}
-          invertTrend
-        />
-        <StatCard label="Approved usage" value={cards.approvedRequests} icon={CheckCircle2} tone="low" />
-        <StatCard
-          label="Confidential hits"
-          value={cards.sensitiveHits}
-          icon={FileWarning}
-          tone={cards.sensitiveHits > 0 ? 'critical' : 'low'}
-          hint="Requests carrying regulated content"
-        />
+        <div className="flex flex-1 flex-wrap border-t border-line xl:border-t-0">
+          <StatCard label="Log rows" value={cards.totalEvents} hint={`${formatNumber(cards.uploads)} uploads`} />
+          <StatCard label="AI requests" value={cards.aiRequests} trend={trends.aiRequests} />
+          <StatCard
+            label="Shadow AI"
+            value={cards.shadowAiRequests}
+            tone={cards.shadowAiRequests > 0 ? 'high' : 'low'}
+            trend={trends.shadowAiRequests}
+            invertTrend
+          />
+          <StatCard label="Approved" value={cards.approvedRequests} tone="low" />
+          <StatCard
+            label="Confidential"
+            value={cards.sensitiveHits}
+            tone={cards.sensitiveHits > 0 ? 'critical' : 'low'}
+          />
+        </div>
       </div>
 
-      <div className="mb-4 grid gap-3 lg:grid-cols-3">
+      <div className="mb-2 grid gap-2 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Daily AI activity</CardTitle>
+            <CardTitle>Daily activity</CardTitle>
           </CardHeader>
           <CardContent>
             <DailyUsageChart data={data.dailyUsage} />
@@ -177,10 +167,10 @@ export function DashboardPage(): JSX.Element {
         </Card>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-2 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>AI services in use</CardTitle>
+            <CardTitle>Services in use</CardTitle>
           </CardHeader>
           <CardContent>
             <UsageByToolChart data={data.usageByTool} />
@@ -195,25 +185,25 @@ export function DashboardPage(): JSX.Element {
             <EmptyState
               icon={AlertTriangle}
               title="No attributable activity"
-              description="The uploaded logs carried no user column, so requests could not be attributed to individuals. Proxy and CASB exports usually include one."
+              description="The uploaded logs had no user column, so requests could not be tied to individuals."
             />
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Individual</TableHead>
-                  <TableHead className="text-right">Requests</TableHead>
+                  <TableHead className="text-right">Reqs</TableHead>
                   <TableHead className="text-right">Shadow</TableHead>
-                  <TableHead>Risk</TableHead>
+                  <TableHead className="w-32">Risk</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data.highRiskActors.map((actor) => (
                   <TableRow key={actor.actor}>
-                    <TableCell className="font-medium">
+                    <TableCell>
                       <Link
                         to={`/events?actor=${encodeURIComponent(actor.actor)}`}
-                        className="hover:text-accent hover:underline"
+                        className="font-mono text-[12px] hover:text-accent hover:underline"
                       >
                         {actor.actor}
                       </Link>
@@ -235,24 +225,5 @@ export function DashboardPage(): JSX.Element {
         </Card>
       </div>
     </>
-  );
-}
-
-function ScoreComponent({
-  label,
-  value,
-  weight,
-}: {
-  label: string;
-  value: string;
-  weight: string;
-}): JSX.Element {
-  return (
-    <div>
-      <p className="text-[11px] text-fg-subtle">
-        {label} <span className="text-fg-subtle/70">· {weight} of score</span>
-      </p>
-      <p className="tabular mt-0.5 text-sm font-medium text-fg">{value}</p>
-    </div>
   );
 }

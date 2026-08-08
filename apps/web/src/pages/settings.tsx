@@ -92,7 +92,7 @@ export function SettingsPage(): JSX.Element {
     <form onSubmit={handleSubmit}>
       <PageHeader
         title="Risk settings"
-        description="How ShadowScan turns a detected request into a number. Every value here is used at ingestion time and recorded against the events it scored."
+        description="applies to future ingestion only"
         actions={
           isAdmin ? (
             <>

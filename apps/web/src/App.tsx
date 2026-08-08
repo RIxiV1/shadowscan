@@ -91,7 +91,7 @@ function RequireAdmin({ children }: { children: JSX.Element }): JSX.Element {
 
 function NotFoundPage(): JSX.Element {
   return (
-    <div className="bg-mesh flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4">
       <EmptyState
         title="Page not found"
         description="That route does not exist in the console."

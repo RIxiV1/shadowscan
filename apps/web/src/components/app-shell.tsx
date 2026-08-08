@@ -3,20 +3,22 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  Menu,
   ScrollText,
   Settings2,
-  ShieldCheck,
+  ShieldHalf,
   Upload,
   X,
 } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/misc';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
-// Application chrome: a fixed left rail plus a routed content area.
+// Fixed left rail. Investigating means jumping between the overview, the event
+// table and settings constantly, and every one of those should be one click
+// with nothing to expand first.
 
 interface NavItem {
   to: string;
@@ -25,14 +27,24 @@ interface NavItem {
   adminOnly?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { to: '/events', label: 'Detections', icon: Activity },
-  { to: '/uploads', label: 'Log sources', icon: Upload },
-  { to: '/reports', label: 'Reports', icon: FileText },
-  { to: '/registry', label: 'AI registry', icon: ShieldCheck },
-  { to: '/settings', label: 'Risk settings', icon: Settings2 },
-  { to: '/audit', label: 'Audit trail', icon: ScrollText, adminOnly: true },
+const NAV: { heading: string; items: NavItem[] }[] = [
+  {
+    heading: 'Monitor',
+    items: [
+      { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+      { to: '/events', label: 'Detections', icon: Activity },
+      { to: '/reports', label: 'Reports', icon: FileText },
+    ],
+  },
+  {
+    heading: 'Manage',
+    items: [
+      { to: '/uploads', label: 'Log sources', icon: Upload },
+      { to: '/registry', label: 'AI registry', icon: ShieldHalf },
+      { to: '/settings', label: 'Risk settings', icon: Settings2 },
+      { to: '/audit', label: 'Audit trail', icon: ScrollText, adminOnly: true },
+    ],
+  },
 ];
 
 export function AppShell(): JSX.Element {
@@ -40,15 +52,19 @@ export function AppShell(): JSX.Element {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
-  const visibleItems = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
+  const groups = NAV.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !item.adminOnly || isAdmin),
+  })).filter((group) => group.items.length > 0);
+
+  const current = groups.flatMap((g) => g.items).find((i) => location.pathname.startsWith(i.to));
 
   return (
-    <div className="bg-mesh min-h-screen">
-      {/* Mobile scrim */}
+    <div className="min-h-screen">
       {mobileOpen ? (
         <button
           type="button"
-          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/70 lg:hidden"
           onClick={() => setMobileOpen(false)}
           aria-label="Close navigation"
         />
@@ -56,14 +72,14 @@ export function AppShell(): JSX.Element {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-line bg-surface/95 backdrop-blur transition-transform lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-52 flex-col border-r border-line bg-surface transition-transform lg:translate-x-0',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex h-14 items-center justify-between gap-2 border-b border-line px-4">
+        <div className="flex h-10 items-center justify-between gap-2 border-b border-line px-3">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="size-5 text-accent" aria-hidden />
-            <span className="text-sm font-semibold tracking-tight">ShadowScan</span>
+            <ShieldHalf className="size-4 text-accent" aria-hidden />
+            <span className="text-[13px] font-semibold tracking-tight">ShadowScan</span>
           </div>
           <Button
             variant="ghost"
@@ -76,45 +92,50 @@ export function AppShell(): JSX.Element {
           </Button>
         </div>
 
-        <nav className="flex-1 space-y-0.5 overflow-y-auto p-3" aria-label="Main">
-          {visibleItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors',
-                  isActive
-                    ? 'bg-elevated font-medium text-fg'
-                    : 'text-fg-muted hover:bg-elevated/60 hover:text-fg',
-                )
-              }
-            >
-              <item.icon className="size-4 shrink-0" aria-hidden />
-              {item.label}
-            </NavLink>
+        <nav className="flex-1 overflow-y-auto py-2" aria-label="Main">
+          {groups.map((group) => (
+            <div key={group.heading} className="mb-3">
+              <p className="eyebrow px-3 pb-1.5">{group.heading}</p>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-2 border-l-2 py-1.5 pl-[10px] pr-3 text-[13px]',
+                      isActive
+                        ? 'border-accent bg-elevated font-medium text-fg'
+                        : 'border-transparent text-fg-muted hover:bg-elevated/60 hover:text-fg',
+                    )
+                  }
+                >
+                  <item.icon className="size-3.5 shrink-0" aria-hidden />
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 
-        <Separator />
-
-        <div className="p-3">
-          <div className="mb-2 px-1">
-            <p className="truncate text-xs font-medium text-fg">{user?.name}</p>
-            <p className="truncate text-[11px] text-fg-subtle">
-              {user?.email} · {user?.role}
-            </p>
+        <div className="border-t border-line px-3 py-2">
+          <p className="truncate text-[12px] text-fg">{user?.name}</p>
+          <div className="mt-0.5 flex items-center justify-between gap-2">
+            <span className="eyebrow truncate">{user?.role}</span>
+            <button
+              type="button"
+              onClick={signOut}
+              className="flex items-center gap-1 text-[11px] text-fg-subtle hover:text-fg"
+            >
+              <LogOut className="size-3" aria-hidden />
+              Sign out
+            </button>
           </div>
-          <Button variant="ghost" size="sm" className="w-full justify-start" onClick={signOut}>
-            <LogOut />
-            Sign out
-          </Button>
         </div>
       </aside>
 
-      <div className="lg:pl-60">
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-line bg-canvas/85 px-4 backdrop-blur lg:px-8">
+      <div className="lg:pl-52">
+        <header className="sticky top-0 z-20 flex h-10 items-center gap-2 border-b border-line bg-canvas/90 px-4 backdrop-blur">
           <Button
             variant="ghost"
             size="icon"
@@ -122,14 +143,14 @@ export function AppShell(): JSX.Element {
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
           >
-            <LayoutDashboard />
+            <Menu />
           </Button>
-          <p className="text-xs text-fg-subtle">
-            {visibleItems.find((item) => location.pathname.startsWith(item.to))?.label ?? 'ShadowScan'}
-          </p>
+          <span className="text-[11px] text-fg-subtle">ShadowScan</span>
+          <span className="text-[11px] text-fg-subtle">/</span>
+          <span className="text-[11px] text-fg-muted">{current?.label ?? 'Console'}</span>
         </header>
 
-        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 lg:px-8">
+        <main className="mx-auto w-full max-w-[1600px] px-4 py-3">
           <Outlet />
         </main>
       </div>

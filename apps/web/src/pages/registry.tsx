@@ -52,7 +52,7 @@ export function RegistryPage(): JSX.Element {
     <>
       <PageHeader
         title="AI registry"
-        description="The catalogue of AI services ShadowScan can identify, and your policy for each. Detection resolves hostnames against this list; anything unmatched falls through to heuristics and is reported as unassessed."
+        description="known AI services and your policy for each"
         actions={
           isAdmin ? (
             <Button variant="primary" size="sm" onClick={() => setCreateOpen(true)}>
@@ -63,15 +63,15 @@ export function RegistryPage(): JSX.Element {
         }
       />
 
-      <Card className="mb-4 p-3">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="mb-2 flex flex-wrap items-center gap-1.5 rounded-[3px] border border-line bg-surface px-2 py-1.5">
+        <div className="contents">
           <div className="relative min-w-56 flex-1">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" />
+            <Search className="pointer-events-none absolute left-2 top-1/2 size-3 -translate-y-1/2 text-fg-subtle" />
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by name, vendor or domain…"
-              className="pl-8"
+              placeholder="name, vendor or domain"
+              className="pl-7"
               aria-label="Search registry"
             />
           </div>
@@ -89,7 +89,7 @@ export function RegistryPage(): JSX.Element {
             </SelectContent>
           </Select>
         </div>
-      </Card>
+      </div>
 
       <Card className="overflow-hidden">
         {providers.isPending ? (

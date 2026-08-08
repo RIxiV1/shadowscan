@@ -14,7 +14,7 @@ export const SelectTrigger = forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-9 w-full items-center justify-between gap-2 rounded-md border border-line-strong bg-elevated px-3 text-sm text-fg transition-colors hover:bg-overlay data-[placeholder]:text-fg-subtle disabled:cursor-not-allowed disabled:opacity-60',
+      'flex h-7 w-full items-center justify-between gap-2 rounded-[3px] border border-line-strong bg-elevated px-2 text-[13px] text-fg transition-colors hover:bg-overlay data-[placeholder]:text-fg-subtle disabled:cursor-not-allowed disabled:opacity-60',
       className,
     )}
     {...props}
@@ -36,7 +36,7 @@ export const SelectContent = forwardRef<
       ref={ref}
       position={position}
       className={cn(
-        'relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md border border-line-strong bg-overlay shadow-2xl shadow-black/60',
+        'relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-[3px] border border-line-strong bg-overlay shadow-lg shadow-black/60',
         position === 'popper' && 'data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1',
         className,
       )}
@@ -55,12 +55,12 @@ export const SelectItem = forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-7 pr-2 text-sm text-fg outline-none data-[highlighted]:bg-elevated data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex cursor-pointer select-none items-center rounded-[2px] py-1 pl-6 pr-2 text-[13px] text-fg outline-none data-[highlighted]:bg-elevated data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className,
     )}
     {...props}
   >
-    <span className="absolute left-2 flex size-3.5 items-center justify-center">
+    <span className="absolute left-1.5 flex size-3 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
         <Check className="size-3.5 text-accent" />
       </SelectPrimitive.ItemIndicator>

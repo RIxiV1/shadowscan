@@ -15,7 +15,7 @@ export function AuditPage(): JSX.Element {
     <>
       <PageHeader
         title="Audit trail"
-        description="Every sign-in, policy change, upload and export. Append-only, retained for one year."
+        description="append-only, 1 year retention"
       />
 
       <Card className="overflow-hidden">

@@ -48,7 +48,7 @@ export function ReportsPage(): JSX.Element {
     <>
       <PageHeader
         title="Reports"
-        description="Point-in-time governance snapshots with findings and recommended actions, exportable as PDF."
+        description="point-in-time snapshots, exportable as PDF"
         actions={
           <Button variant="primary" size="sm" onClick={() => setDialogOpen(true)}>
             <Plus />

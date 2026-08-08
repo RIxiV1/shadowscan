@@ -50,16 +50,16 @@ export function ScoreMeter({ score, band }: { score: number; band: RiskBand }): 
 
   return (
     <div className="flex items-center gap-2">
-      <span className="tabular w-8 text-right text-sm font-medium text-fg">{score}</span>
+      <span className="tabular w-6 text-right text-[12px] text-fg">{score}</span>
       <div
-        className="h-1.5 w-20 overflow-hidden rounded-full bg-elevated"
+        className="h-1 w-16 overflow-hidden bg-elevated"
         role="meter"
         aria-valuenow={score}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={`Risk score ${score} of 100, ${band}`}
       >
-        <div className={cn('h-full rounded-full', colour)} style={{ width: `${Math.min(100, score)}%` }} />
+        <div className={cn('h-full', colour)} style={{ width: `${Math.min(100, score)}%` }} />
       </div>
     </div>
   );

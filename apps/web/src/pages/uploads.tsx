@@ -65,7 +65,7 @@ export function UploadsPage(): JSX.Element {
     <>
       <PageHeader
         title="Log sources"
-        description="Upload browser history exports, proxy access logs or CASB reports. Files are parsed in memory and discarded — only redacted AI detections are stored."
+        description="parsed in memory, only detections are stored"
       />
 
       <Card className="mb-4">

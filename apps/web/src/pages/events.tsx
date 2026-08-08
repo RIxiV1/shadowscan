@@ -60,11 +60,11 @@ export function EventsPage(): JSX.Element {
     <>
       <PageHeader
         title="Detections"
-        description="Every AI request extracted from your logs, with the itemised factors behind its risk score."
+        description="every AI request found in your logs"
       />
 
-      <Card className="mb-4 p-3">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="mb-2 flex flex-wrap items-center gap-1.5 rounded-[3px] border border-line bg-surface px-2 py-1.5">
+        <div className="contents">
           <form
             className="relative min-w-56 flex-1"
             onSubmit={(event) => {
@@ -72,12 +72,12 @@ export function EventsPage(): JSX.Element {
               setParam('search', searchDraft.trim() || undefined);
             }}
           >
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" />
+            <Search className="pointer-events-none absolute left-2 top-1/2 size-3 -translate-y-1/2 text-fg-subtle" />
             <Input
               value={searchDraft}
               onChange={(event) => setSearchDraft(event.target.value)}
-              placeholder="Search host, person or tool…"
-              className="pl-8"
+              placeholder="host, person or tool"
+              className="pl-7"
               aria-label="Search detections"
             />
           </form>
@@ -126,11 +126,11 @@ export function EventsPage(): JSX.Element {
         </div>
 
         {searchParams.get('actor') ? (
-          <p className="mt-2 text-xs text-fg-subtle">
-            Filtered to <span className="font-medium text-fg">{searchParams.get('actor')}</span>
-          </p>
+          <span className="text-[11px] text-fg-subtle">
+            actor <span className="font-mono text-fg-muted">{searchParams.get('actor')}</span>
+          </span>
         ) : null}
-      </Card>
+      </div>
 
       <Card className="overflow-hidden">
         {isPending ? (

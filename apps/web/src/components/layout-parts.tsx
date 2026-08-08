@@ -6,7 +6,9 @@ import { Skeleton } from '@/components/ui/misc';
 import { formatNumber } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
-// Page title block.
+// Title and actions on one line. The old version had a paragraph of
+// explanatory copy under every heading, which is fine on a marketing page and
+// just noise on a screen you look at forty times a day.
 export function PageHeader({
   title,
   description,
@@ -17,12 +19,14 @@ export function PageHeader({
   actions?: ReactNode;
 }): JSX.Element {
   return (
-    <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-      <div className="min-w-0">
-        <h1 className="text-xl font-semibold tracking-tight text-fg">{title}</h1>
-        {description ? <p className="mt-1 max-w-2xl text-sm text-fg-muted">{description}</p> : null}
+    <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-2.5">
+      <div className="flex min-w-0 items-baseline gap-3">
+        <h1 className="text-[15px] font-semibold text-fg">{title}</h1>
+        {description ? (
+          <p className="hidden truncate text-[12px] text-fg-subtle lg:block">{description}</p>
+        ) : null}
       </div>
-      {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
+      {actions ? <div className="flex shrink-0 items-center gap-1.5">{actions}</div> : null}
     </div>
   );
 }
@@ -40,26 +44,22 @@ export function EmptyState({
   action?: ReactNode;
 }): JSX.Element {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
-      <div className="rounded-full border border-line bg-elevated p-3">
-        <Icon className="size-5 text-fg-subtle" aria-hidden />
-      </div>
-      <div>
-        <p className="text-sm font-medium text-fg">{title}</p>
-        <p className="mx-auto mt-1 max-w-md text-xs text-fg-subtle">{description}</p>
-      </div>
-      {action}
+    <div className="flex flex-col items-center justify-center gap-2 px-6 py-10 text-center">
+      <Icon className="size-4 text-fg-subtle" aria-hidden />
+      <p className="text-[13px] text-fg">{title}</p>
+      <p className="mx-auto max-w-sm text-[11px] leading-relaxed text-fg-subtle">{description}</p>
+      {action ? <div className="mt-1">{action}</div> : null}
     </div>
   );
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }): JSX.Element {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 px-6 py-12 text-center">
-      <AlertTriangle className="size-5 text-risk-high" aria-hidden />
+    <div className="flex flex-col items-center justify-center gap-2 px-6 py-10 text-center">
+      <AlertTriangle className="size-4 text-risk-high" aria-hidden />
       <div>
-        <p className="text-sm font-medium text-fg">Could not load this view</p>
-        <p className="mx-auto mt-1 max-w-md text-xs text-fg-subtle">{message}</p>
+        <p className="text-[13px] text-fg">Could not load this view</p>
+        <p className="mx-auto max-w-md text-[11px] text-fg-subtle">{message}</p>
       </div>
       {onRetry ? (
         <Button size="sm" onClick={onRetry}>
@@ -72,9 +72,9 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
 
 export function LoadingRows({ rows = 5, className }: { rows?: number; className?: string }): JSX.Element {
   return (
-    <div className={cn('space-y-2 p-4', className)}>
+    <div className={cn('space-y-1.5 p-3', className)}>
       {Array.from({ length: rows }, (_, index) => (
-        <Skeleton key={index} className="h-9 w-full" />
+        <Skeleton key={index} className="h-6 w-full" />
       ))}
     </div>
   );
@@ -104,8 +104,8 @@ export function Pagination({
   const last = Math.min(page * pageSize, total);
 
   return (
-    <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
-      <p className="tabular text-xs text-fg-subtle">
+    <div className="flex items-center justify-between border-t border-line px-3 py-1.5">
+      <p className="tabular text-[11px] text-fg-subtle">
         {formatNumber(first)}–{formatNumber(last)} of {formatNumber(total)}
       </p>
       <div className="flex items-center gap-1">
@@ -118,7 +118,7 @@ export function Pagination({
         >
           <ChevronLeft />
         </Button>
-        <span className="tabular px-2 text-xs text-fg-muted">
+        <span className="tabular px-1.5 text-[11px] text-fg-muted">
           {page} / {totalPages}
         </span>
         <Button
