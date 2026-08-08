@@ -4,7 +4,9 @@ import type {
   ProviderCategory,
   RiskBand,
 } from '@shadowscan/shared';
+import { buildRecommendations, type Recommendation } from '../../engine/recommendations.js';
 import { scoreActor, scoreOrg } from '../../engine/risk.js';
+import { Provider } from '../../models/Provider.js';
 import { AiEvent } from '../../models/AiEvent.js';
 import { getRiskSettings } from '../../models/RiskSettings.js';
 import { Upload } from '../../models/Upload.js';
@@ -247,6 +249,49 @@ export async function buildSnapshot(window: Window): Promise<Snapshot> {
   };
 }
 
+/**
+ * Runs the recommendation rules over a snapshot.
+ *
+ * Lives here rather than in the reports module because both the dashboard and the
+ * PDF need it, and they must never disagree - a finding shown on screen has to be
+ * the same finding that lands in the report.
+ *
+ * The extra query is unavoidable: the rules need vendor attributes (jurisdiction,
+ * training posture) that events do not carry. Keyed on the tools that actually
+ * appeared rather than loading the whole registry.
+ */
+export async function buildFindings(snapshot: Snapshot): Promise<Recommendation[]> {
+  const keys = snapshot.usageByTool.map((tool) => tool.key).filter((key) => key !== UNCLASSIFIED_KEY);
+
+  const docs = await Provider.find({ key: { $in: keys } })
+    .select('key dataRegion trainsOnUserData')
+    .lean();
+  const metadata = new Map(docs.map((doc) => [doc.key, doc]));
+
+  return buildRecommendations({
+    aiRequests: snapshot.aiRequests,
+    shadowAiRequests: snapshot.shadowAiRequests,
+    approvedRequests: snapshot.approvedRequests,
+    sensitiveHits: snapshot.sensitiveHits,
+    uniqueActors: snapshot.uniqueActors,
+    uniqueProviders: snapshot.uniqueProviders,
+    providers: snapshot.usageByTool.map((tool) => ({
+      key: tool.key,
+      name: tool.name,
+      requests: tool.requests,
+      policy: tool.policy,
+      dataRegion: metadata.get(tool.key)?.dataRegion ?? 'unknown',
+      trainsOnUserData: metadata.get(tool.key)?.trainsOnUserData ?? false,
+      isHeuristic: tool.key === UNCLASSIFIED_KEY,
+    })),
+    actors: snapshot.highRiskActors.map((actor) => ({
+      actor: actor.actor,
+      score: actor.score,
+      band: actor.band,
+    })),
+  });
+}
+
 export async function buildDashboard(days: number): Promise<DashboardSummary> {
   const window = resolveWindow(days);
   const previous = {
@@ -266,6 +311,9 @@ export async function buildDashboard(days: number): Promise<DashboardSummary> {
   ]);
 
   const uploads = uploadStats[0] ?? { uploads: 0, totalEvents: 0 };
+
+  // Sequential rather than in the Promise.all above because it needs the snapshot.
+  const findings = await buildFindings(current);
 
   return {
     window: { from: window.from.toISOString(), to: window.to.toISOString(), days },
@@ -288,6 +336,7 @@ export async function buildDashboard(days: number): Promise<DashboardSummary> {
     usageByCategory: current.usageByCategory,
     dailyUsage: current.dailyUsage,
     policyBreakdown: current.policyBreakdown,
+    findings,
     highRiskActors: current.highRiskActors,
   };
 }

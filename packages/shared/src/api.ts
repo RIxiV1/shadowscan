@@ -119,6 +119,13 @@ export interface DashboardSummary {
     approvedRequests: number;
   }>;
   policyBreakdown: Array<{ policy: PolicyStatus; requests: number }>;
+  /**
+   * Top findings from the same deterministic rules the PDF report uses, ordered
+   * most severe first. The dashboard is the place someone decides what to do
+   * today, so it carries the judgement rather than leaving the reader to infer it
+   * from the charts.
+   */
+  findings: Array<{ severity: RiskBand; title: string; detail: string }>;
   highRiskActors: Array<{
     actor: string;
     requests: number;

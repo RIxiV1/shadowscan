@@ -1,12 +1,12 @@
 import type { RiskReportDto } from '@shadowscan/shared';
-import { buildRecommendations } from '../../engine/recommendations.js';
+
 import { AppError } from '../../lib/errors.js';
 import { toRiskReportDto } from '../../lib/mappers.js';
 import { paginate, resolvePage } from '../../lib/pagination.js';
-import { Provider } from '../../models/Provider.js';
+
 import { RiskReport } from '../../models/RiskReport.js';
 import { Upload } from '../../models/Upload.js';
-import { buildSnapshot, UNCLASSIFIED_KEY, type Window } from '../analytics/analytics.service.js';
+import { buildFindings, buildSnapshot, type Window } from '../analytics/analytics.service.js';
 
 export interface GenerateReportInput {
   title?: string;
@@ -33,47 +33,15 @@ export async function generateReport(input: GenerateReportInput): Promise<RiskRe
   const window: Window = { from, to, days };
   const snapshot = await buildSnapshot(window);
 
-  // Recommendations need vendor attributes the event documents do not carry
-  // (jurisdiction, training posture). One indexed lookup keyed on the tools that
-  // actually appeared, rather than loading the whole registry.
-  const providerKeys = snapshot.usageByTool
-    .map((tool) => tool.key)
-    .filter((key) => key !== UNCLASSIFIED_KEY);
-
-  const providerDocs = await Provider.find({ key: { $in: providerKeys } })
-    .select('key dataRegion trainsOnUserData')
-    .lean();
-
-  const metadata = new Map(providerDocs.map((doc) => [doc.key, doc]));
+  // Same helper the dashboard uses, so a finding on screen is the same finding
+  // that lands in the PDF.
+  const recommendations = await buildFindings(snapshot);
 
   const totalEventsAgg = await Upload.aggregate<{ totalEvents: number }>([
     { $match: { createdAt: { $gte: from, $lte: to }, status: 'completed' } },
     { $group: { _id: null, totalEvents: { $sum: '$rowsParsed' } } },
     { $project: { _id: 0, totalEvents: 1 } },
   ]);
-
-  const recommendations = buildRecommendations({
-    aiRequests: snapshot.aiRequests,
-    shadowAiRequests: snapshot.shadowAiRequests,
-    approvedRequests: snapshot.approvedRequests,
-    sensitiveHits: snapshot.sensitiveHits,
-    uniqueActors: snapshot.uniqueActors,
-    uniqueProviders: snapshot.uniqueProviders,
-    providers: snapshot.usageByTool.map((tool) => ({
-      key: tool.key,
-      name: tool.name,
-      requests: tool.requests,
-      policy: tool.policy,
-      dataRegion: metadata.get(tool.key)?.dataRegion ?? 'unknown',
-      trainsOnUserData: metadata.get(tool.key)?.trainsOnUserData ?? false,
-      isHeuristic: tool.key === UNCLASSIFIED_KEY,
-    })),
-    actors: snapshot.highRiskActors.map((actor) => ({
-      actor: actor.actor,
-      score: actor.score,
-      band: actor.band,
-    })),
-  });
 
   const report = await RiskReport.create({
     title: input.title?.trim() || defaultTitle(from, to),
