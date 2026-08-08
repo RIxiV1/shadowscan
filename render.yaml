@@ -1,0 +1,62 @@
+# Render blueprint for the ShadowScan API.
+#
+# The web client deploys separately to Vercel — see apps/web/vercel.json.
+# Secrets are marked `sync: false` so Render prompts for them rather than
+# storing them in this file, which is committed to a public repository.
+services:
+  - type: web
+    name: shadowscan-api
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+
+    # The build runs from the repository root because this is an npm workspace
+    # monorepo: the API imports @shadowscan/shared, which must be compiled first.
+    # `npm run build` does shared → api → web in order.
+    buildCommand: npm ci && npm run build --workspace @shadowscan/shared && npm run build --workspace @shadowscan/api
+    startCommand: npm start --workspace @shadowscan/api
+
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: LOG_LEVEL
+        value: info
+
+      # mongodb+srv://…/shadowscan  — Atlas connection string.
+      - key: MONGODB_URI
+        sync: false
+
+      # node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 8h
+
+      # One-time token authorising creation of the first admin account.
+      # Unset it once that account exists.
+      - key: BOOTSTRAP_TOKEN
+        sync: false
+
+      # Exact origin of the deployed web client, e.g. https://shadowscan.vercel.app
+      # An allowlist — no wildcards.
+      - key: CORS_ORIGINS
+        sync: false
+
+      - key: MAX_UPLOAD_BYTES
+        value: 10485760
+      - key: MAX_ROWS_PER_UPLOAD
+        value: 50000
+
+# After the first successful deploy, open the Render shell and run:
+#
+#   npm run seed --workspace @shadowscan/api
+#
+# It is idempotent and safe to re-run. It creates the provider registry, the risk
+# settings singleton and the indexes. It does NOT run automatically on deploy,
+# because a seeder that runs unattended on every push is one bad migration away
+# from rewriting production data.

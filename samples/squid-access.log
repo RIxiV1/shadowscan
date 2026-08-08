@@ -1,0 +1,14 @@
+# Squid native access.log — whitespace separated
+# time elapsed remotehost code/status bytes method URL rfc931 peerstatus/peerhost type
+1785920042.312 214 10.14.2.31 TCP_MISS/200 8421 GET https://chatgpt.com/c/6f21a9 priya.sharma DIRECT/104.18.32.115 text/html
+1785920318.884 118 10.14.2.44 TCP_MISS/200 3120 POST https://claude.ai/api/append_message arjun.mehta DIRECT/160.79.104.10 application/json
+1785920655.201 92 10.14.2.31 TCP_DENIED/403 512 GET https://chat.deepseek.com/ priya.sharma NONE/- text/html
+1785921004.775 305 10.14.3.12 TCP_MISS/200 15230 POST https://api.githubcopilot.com/chat/completions vikram.nair DIRECT/140.82.113.22 application/json
+1785921460.019 88 10.14.2.77 TCP_MISS/200 2044 GET https://www.perplexity.ai/search?q=terraform+state+lock+error sneha.kulkarni DIRECT/104.18.5.90 text/html
+1785921893.443 141 10.14.4.05 TCP_MISS/200 6612 GET https://copilot.microsoft.com/chats ananya.iyer DIRECT/13.107.42.16 text/html
+1785922310.667 76 10.14.2.44 TCP_MISS/200 1180 GET https://github.com/acme/platform arjun.mehta DIRECT/140.82.121.4 text/html
+1785922744.902 233 10.14.5.19 TCP_DENIED/403 512 POST https://sider.ai/api/chat aditya.rao NONE/- application/json
+1785923190.338 167 10.14.3.88 TCP_MISS/200 4408 GET https://cursor.com/dashboard karthik.reddy DIRECT/76.76.21.21 text/html
+1785923655.014 199 10.14.2.31 TCP_MISS/200 9902 GET https://ai.internal-vendor-tools.com/chat priya.sharma DIRECT/203.0.113.44 text/html
+1785924102.560 124 10.14.6.02 TCP_MISS/200 3310 GET https://grok.com/chat meera.pillai DIRECT/162.159.140.98 text/html
+1785924578.891 310 10.14.2.31 TCP_MISS/200 22140 POST https://huggingface.co/api/datasets/acme/internal priya.sharma DIRECT/18.164.96.11 application/json

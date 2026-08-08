@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A second push to the same branch cancels the first: on a free runner, queuing
+# behind a superseded run is the main source of slow feedback.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Type-check, test and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # The shared package emits the .d.ts files both apps type-check against,
+      # so it has to be built before anything else can be checked.
+      - name: Build shared types
+        run: npm run build:shared
+
+      - name: Type-check API
+        run: npm run typecheck --workspace @shadowscan/api
+
+      - name: Type-check web
+        run: npm run typecheck --workspace @shadowscan/web
+
+      - name: Test engine
+        run: npm test --workspace @shadowscan/api
+
+      - name: Build
+        run: npm run build
+
+      # Advisory rather than blocking: a transitive high-severity advisory with no
+      # available fix should not stop a deploy, but it should be visible in the log.
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true

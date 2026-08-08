@@ -1,0 +1,13 @@
+timestamp,user_email,url,action,bytes_out,prompt
+2026-08-05T09:12:04Z,priya.sharma@acme.co.in,https://chatgpt.com/backend-api/conversation,allowed,4821,"Rewrite this confidential board deck summary for the Q3 earnings call"
+2026-08-05T09:31:19Z,arjun.mehta@acme.co.in,https://claude.ai/api/organizations/chat,allowed,2210,"Explain this stack trace from the payments service"
+2026-08-05T10:04:47Z,rahul.verma@acme.co.in,https://chat.deepseek.com/api/v0/chat,blocked,9930,"Here is our customer list, generate outreach emails: rahul@acme.co.in, priya@acme.co.in, 4111111111111111"
+2026-08-05T10:22:58Z,ananya.iyer@acme.co.in,https://copilot.microsoft.com/c/api/conversations,allowed,1180,"Summarise the attached vendor SOW"
+2026-08-05T11:40:12Z,priya.sharma@acme.co.in,https://www.chatpdf.com/api/upload,blocked,184220,"Summarise the attached NDA and the merger due diligence memo"
+2026-08-05T12:55:33Z,vikram.nair@acme.co.in,https://api.githubcopilot.com/chat/completions,allowed,760,"Generate unit tests for the retry helper"
+2026-08-05T13:18:07Z,sneha.kulkarni@acme.co.in,https://claude.ai/api/organizations/chat,allowed,3402,"Debug this deploy script, my api key is sk-proj-9f2Ba7QeLm4X8vTzR1cW0dYh"
+2026-08-05T14:47:51Z,aditya.rao@acme.co.in,https://sider.ai/api/chat,blocked,5510,"Draft a termination letter, salary 1450000, aadhaar 4321 8765 2109"
+2026-08-05T15:29:44Z,meera.pillai@acme.co.in,https://gemini.google.com/api/generate,allowed,1990,"Translate the release notes into Hindi"
+2026-08-05T16:03:22Z,karthik.reddy@acme.co.in,https://openrouter.ai/api/v1/chat/completions,allowed,7120,"Refactor this module for readability"
+2026-08-05T22:41:09Z,rahul.verma@acme.co.in,https://chat.deepseek.com/api/v0/chat,blocked,15240,"Full source code of the pricing engine, optimise it"
+2026-08-06T02:14:36Z,rahul.verma@acme.co.in,https://kimi.com/api/chat,blocked,8830,"Proprietary trade secret formula, explain it simply"

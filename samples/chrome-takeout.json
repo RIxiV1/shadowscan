@@ -1,0 +1,46 @@
+{
+  "Browser History": [
+    {
+      "page_transition": "LINK",
+      "title": "ChatGPT",
+      "url": "https://chatgpt.com/c/1f4a7b",
+      "client_id": "workstation-14",
+      "time_usec": 1785920042312000
+    },
+    {
+      "page_transition": "TYPED",
+      "title": "Claude",
+      "url": "https://claude.ai/chat/new",
+      "client_id": "workstation-14",
+      "time_usec": 1785920318884000
+    },
+    {
+      "page_transition": "TYPED",
+      "title": "Otter.ai — Meeting notes",
+      "url": "https://otter.ai/u/notes",
+      "client_id": "workstation-14",
+      "time_usec": 1785921004775000
+    },
+    {
+      "page_transition": "LINK",
+      "title": "Confluence",
+      "url": "https://acme.atlassian.net/wiki/spaces/PLAT",
+      "client_id": "workstation-14",
+      "time_usec": 1785921460019000
+    },
+    {
+      "page_transition": "TYPED",
+      "title": "v0 by Vercel",
+      "url": "https://v0.app/chat",
+      "client_id": "workstation-14",
+      "time_usec": 1785921893443000
+    },
+    {
+      "page_transition": "TYPED",
+      "title": "PromptForge",
+      "url": "https://promptforge.ai/generate",
+      "client_id": "workstation-14",
+      "time_usec": 1785922310667000
+    }
+  ]
+}
