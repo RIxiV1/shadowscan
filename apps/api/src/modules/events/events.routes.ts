@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { FilterQuery } from 'mongoose';
 import { z } from 'zod';
 import { POLICY_STATUSES, RISK_BANDS } from '@shadowscan/shared';
+import type { EventListResult, PolicyStatus, RiskBand } from '@shadowscan/shared';
 import { AppError } from '../../lib/errors.js';
 import { asyncHandler, pathParam, sendOk } from '../../lib/http.js';
 import { toAiEventDto } from '../../lib/mappers.js';
@@ -61,17 +62,63 @@ eventsRouter.get(
       filter.$or = [{ host: pattern }, { actor: contains }, { providerName: contains }];
     }
 
-    const [items, total] = await Promise.all([
+    const [items, total, tallies] = await Promise.all([
       AiEvent.find(filter)
         .sort({ [query.sort]: query.order === 'asc' ? 1 : -1 })
         .skip(page.skip)
         .limit(page.limit),
       AiEvent.countDocuments(filter),
+      // Tallies span the whole filtered set, not the current page. One $facet so
+      // this is a single extra round trip rather than four.
+      AiEvent.aggregate<TallyFacet>([
+        { $match: filter },
+        {
+          $facet: {
+            byBand: [{ $group: { _id: '$riskBand', n: { $sum: 1 } } }],
+            byPolicy: [{ $group: { _id: '$policy', n: { $sum: 1 } } }],
+            sensitive: [
+              { $match: { 'sensitiveHits.0': { $exists: true } } },
+              { $count: 'n' },
+            ],
+            actors: [{ $group: { _id: '$actorHash' } }, { $count: 'n' }],
+          },
+        },
+      ]),
     ]);
 
-    sendOk(res, paginate(items.map(toAiEventDto), total, page));
+    sendOk(res, {
+      ...paginate(items.map(toAiEventDto), total, page),
+      counts: shapeCounts(tallies[0]),
+    });
   }),
 );
+
+interface TallyFacet {
+  byBand: Array<{ _id: RiskBand; n: number }>;
+  byPolicy: Array<{ _id: PolicyStatus; n: number }>;
+  sensitive: Array<{ n: number }>;
+  actors: Array<{ n: number }>;
+}
+
+function shapeCounts(facet: TallyFacet | undefined): EventListResult['counts'] {
+  // Every band and policy key is always present, so the UI can render a stable
+  // set of chips instead of ones that appear and vanish as filters change.
+  const byBand = Object.fromEntries(RISK_BANDS.map((b) => [b, 0])) as Record<RiskBand, number>;
+  const byPolicy = Object.fromEntries(POLICY_STATUSES.map((p) => [p, 0])) as Record<
+    PolicyStatus,
+    number
+  >;
+
+  for (const row of facet?.byBand ?? []) if (row._id in byBand) byBand[row._id] = row.n;
+  for (const row of facet?.byPolicy ?? []) if (row._id in byPolicy) byPolicy[row._id] = row.n;
+
+  return {
+    byBand,
+    byPolicy,
+    sensitive: facet?.sensitive[0]?.n ?? 0,
+    actors: facet?.actors[0]?.n ?? 0,
+  };
+}
 eventsRouter.get(
   '/:id',
   validate(z.object({ id: z.string().regex(/^[a-f\d]{24}$/i) }), 'params'),

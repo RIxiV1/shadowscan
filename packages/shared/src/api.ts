@@ -217,7 +217,22 @@ export type MeResponseBody = ApiResponse<UserDto>;
 export type DashboardResponseBody = ApiResponse<DashboardSummary>;
 export type UploadResponseBody = ApiResponse<UploadResult>;
 export type UploadListResponseBody = ApiResponse<Paginated<UploadDto>>;
-export type EventListResponseBody = ApiResponse<Paginated<AiEventDto>>;
+export type EventListResponseBody = ApiResponse<EventListResult>;
+
+/**
+ * Detections page payload: one page of rows plus tallies over the whole filtered
+ * set. The tallies deliberately ignore pagination - counting only the visible 25
+ * rows would make the summary change as you page through, which is worse than
+ * having no summary at all.
+ */
+export interface EventListResult extends Paginated<AiEventDto> {
+  counts: {
+    byBand: Record<RiskBand, number>;
+    byPolicy: Record<PolicyStatus, number>;
+    sensitive: number;
+    actors: number;
+  };
+}
 
 export type ProviderListResponseBody = ApiResponse<ProviderDto[]>;
 

@@ -4,6 +4,7 @@ import { Globe, Plus, Search, Trash2 } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import { PolicyBadge } from '@/components/indicators';
+import { Strip, StripStat, Toolbar } from '@/components/console';
 import { EmptyState, ErrorState, LoadingRows, PageHeader } from '@/components/layout-parts';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -45,6 +46,11 @@ export function RegistryPage(): JSX.Element {
     policy: policyFilter === ALL ? undefined : (policyFilter as PolicyStatus),
   });
 
+  // Separate unfiltered query for the tallies. Counting the filtered list would
+  // zero every other bucket the moment you clicked one of them. Same query key
+  // as the unfiltered case, so it is served from cache most of the time.
+  const catalogue = useProviders({});
+
   const updatePolicy = useUpdateProviderPolicy();
   const deleteProvider = useDeleteProvider();
 
@@ -63,7 +69,35 @@ export function RegistryPage(): JSX.Element {
         }
       />
 
-      <div className="mb-2 flex flex-wrap items-center gap-1.5 rounded-[3px] border border-line bg-surface px-2 py-1.5">
+      {/* "Not assessed" is the number that matters here: every one of those is a
+          tool in the registry nobody has made a decision about yet. */}
+      {catalogue.data ? (
+        <Strip>
+          <StripStat
+            label="Catalogued"
+            value={catalogue.data.length}
+            active={policyFilter === ALL}
+            onClick={() => setPolicyFilter(ALL)}
+          />
+          {(['approved', 'unknown', 'blocked'] as const).map((policy) => (
+            <StripStat
+              key={policy}
+              label={policy === 'unknown' ? 'Not assessed' : policy}
+              value={catalogue.data.filter((p) => p.policy === policy).length}
+              tone={policy === 'approved' ? 'low' : policy === 'blocked' ? 'critical' : 'medium'}
+              active={policyFilter === policy}
+              onClick={() => setPolicyFilter(policyFilter === policy ? ALL : policy)}
+            />
+          ))}
+          <StripStat
+            label="Trains on data"
+            value={catalogue.data.filter((p) => p.trainsOnUserData).length}
+            tone="muted"
+          />
+        </Strip>
+      ) : null}
+
+      <Toolbar>
         <div className="contents">
           <div className="relative min-w-56 flex-1">
             <Search className="pointer-events-none absolute left-2 top-1/2 size-3 -translate-y-1/2 text-fg-subtle" />
@@ -89,7 +123,7 @@ export function RegistryPage(): JSX.Element {
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </Toolbar>
 
       <Card className="overflow-hidden">
         {providers.isPending ? (
@@ -118,7 +152,7 @@ export function RegistryPage(): JSX.Element {
               {providers.data.map((provider) => (
                 <TableRow key={provider.id}>
                   <TableCell>
-                    <p className="text-sm font-medium">{provider.name}</p>
+                    <p className="text-[13px]">{provider.name}</p>
                     <p className="text-[11px] text-fg-subtle">
                       {provider.vendor} · {provider.category}
                       {provider.trainsOnUserData ? ' · trains on submitted data' : ''}
@@ -141,8 +175,8 @@ export function RegistryPage(): JSX.Element {
                       ) : null}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs text-fg-muted">{provider.dataRegion}</TableCell>
-                  <TableCell className="tabular text-right text-sm">{provider.riskWeight}</TableCell>
+                  <TableCell className="text-[11px] text-fg-muted">{provider.dataRegion}</TableCell>
+                  <TableCell className="tabular text-right text-[13px]">{provider.riskWeight}</TableCell>
                   <TableCell>
                     {isAdmin ? (
                       <Select

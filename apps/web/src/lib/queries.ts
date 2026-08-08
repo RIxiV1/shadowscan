@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import type {
-  AiEventDto,
   AuditLogDto,
   DashboardSummary,
   EventListQuery,
+  EventListResult,
   Paginated,
   PolicyStatus,
   ProviderDto,
@@ -73,11 +73,11 @@ export function useDeleteUpload() {
 
 // --------------------------------------------------------------- events ---
 
-export function useEvents(filters: EventListQuery): UseQueryResult<Paginated<AiEventDto>> {
+export function useEvents(filters: EventListQuery): UseQueryResult<EventListResult> {
   return useQuery({
     queryKey: queryKeys.events(filters),
     queryFn: () =>
-      apiRequest<Paginated<AiEventDto>>('/events', {
+      apiRequest<EventListResult>('/events', {
         query: filters as Record<string, string | number | undefined>,
       }),
     // Keeps the previous page on screen while the next one loads, so the table

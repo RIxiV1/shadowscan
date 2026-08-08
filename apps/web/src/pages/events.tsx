@@ -4,6 +4,7 @@ import { Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PolicyBadge, RiskBandBadge } from '@/components/indicators';
+import { Strip, StripStat, Toolbar } from '@/components/console';
 import { EmptyState, ErrorState, LoadingRows, PageHeader, Pagination } from '@/components/layout-parts';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -58,12 +59,35 @@ export function EventsPage(): JSX.Element {
 
   return (
     <>
-      <PageHeader
-        title="Detections"
-        description="every AI request found in your logs"
-      />
+      <PageHeader title="Detections" description="every AI request found in your logs" />
 
-      <div className="mb-2 flex flex-wrap items-center gap-1.5 rounded-[3px] border border-line bg-surface px-2 py-1.5">
+      {/* Tallies double as filters. Clicking a band is the fastest route into
+          the subset it counts, which is what an analyst is doing anyway. */}
+      {data ? (
+        <Strip>
+          <StripStat label="Matching" value={data.total} />
+          <StripStat label="People" value={data.counts.actors} tone="muted" />
+          <StripStat
+            label="Confidential"
+            value={data.counts.sensitive}
+            tone={data.counts.sensitive > 0 ? 'critical' : 'muted'}
+          />
+          {RISK_BANDS.slice()
+            .reverse()
+            .map((band) => (
+              <StripStat
+                key={band}
+                label={band}
+                value={data.counts.byBand[band]}
+                tone={band}
+                active={searchParams.get('band') === band}
+                onClick={() => setParam('band', searchParams.get('band') === band ? undefined : band)}
+              />
+            ))}
+        </Strip>
+      ) : null}
+
+      <Toolbar>
         <div className="contents">
           <form
             className="relative min-w-56 flex-1"
@@ -130,7 +154,7 @@ export function EventsPage(): JSX.Element {
             actor <span className="font-mono text-fg-muted">{searchParams.get('actor')}</span>
           </span>
         ) : null}
-      </div>
+      </Toolbar>
 
       <Card className="overflow-hidden">
         {isPending ? (

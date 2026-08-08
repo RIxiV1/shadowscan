@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { PolicyBadge, RiskBandBadge } from '@/components/indicators';
 import { EmptyState, ErrorState, LoadingRows, PageHeader, Pagination } from '@/components/layout-parts';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiRequestError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth';
@@ -68,8 +68,7 @@ export function UploadsPage(): JSX.Element {
         description="parsed in memory, only detections are stored"
       />
 
-      <Card className="mb-4">
-        <CardContent className="pt-5">
+      <div className="mb-2">
           <div
             onDragOver={(event) => {
               event.preventDefault();
@@ -78,24 +77,22 @@ export function UploadsPage(): JSX.Element {
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
             className={cn(
-              'flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-6 py-10 text-center transition-colors',
+              'flex items-center gap-3 rounded-[3px] border border-dashed px-3 py-2.5',
               dragging ? 'border-accent bg-accent/5' : 'border-line-strong bg-elevated/40',
             )}
           >
-            <div className="rounded-full border border-line bg-surface p-3">
-              {createUpload.isPending ? (
-                <Loader2 className="size-5 animate-spin text-accent" aria-hidden />
-              ) : (
-                <FileUp className="size-5 text-fg-subtle" aria-hidden />
-              )}
-            </div>
+            {createUpload.isPending ? (
+              <Loader2 className="size-4 shrink-0 animate-spin text-accent" aria-hidden />
+            ) : (
+              <FileUp className="size-4 shrink-0 text-fg-subtle" aria-hidden />
+            )}
 
-            <div>
-              <p className="text-sm font-medium text-fg">
-                {createUpload.isPending ? 'Parsing and scoring…' : 'Drop a log file here'}
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] text-fg">
+                {createUpload.isPending ? 'Parsing and scoring' : 'Drop a log file here'}
               </p>
-              <p className="mt-1 text-xs text-fg-subtle">
-                CSV, TSV, JSON, NDJSON, TXT or LOG · up to 10 MB · 50,000 rows
+              <p className="text-[11px] text-fg-subtle">
+                CSV, TSV, JSON, NDJSON, TXT, LOG · 10 MB · 50,000 rows
               </p>
             </div>
 
@@ -118,8 +115,7 @@ export function UploadsPage(): JSX.Element {
               Choose file
             </Button>
           </div>
-        </CardContent>
-      </Card>
+      </div>
 
       {result ? <UploadResultPanel result={result} onDismiss={() => setResult(null)} /> : null}
 
@@ -162,7 +158,7 @@ export function UploadsPage(): JSX.Element {
                           <CheckCircle2 className="size-3.5 shrink-0 text-risk-low" aria-label="Completed" />
                         )}
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{upload.filename}</p>
+                          <p className="truncate text-[13px]">{upload.filename}</p>
                           <p className="text-[11px] text-fg-subtle">
                             {formatBytes(upload.sizeBytes)}
                             {upload.rowsRejected > 0
@@ -237,7 +233,7 @@ function UploadResultPanel({
   const { upload, preview } = result;
 
   return (
-    <Card className="mb-4 overflow-hidden border-accent/30">
+    <Card className="mb-2 overflow-hidden border-accent/40">
       <CardHeader className="flex-row items-center justify-between">
         <div>
           <CardTitle>Ingestion complete — {upload.filename}</CardTitle>
