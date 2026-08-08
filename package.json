@@ -1,0 +1,33 @@
+{
+  "name": "shadowscan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Governance & Shadow AI Detection Platform",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "build:shared": "npm run build --workspace @shadowscan/shared",
+    "dev": "npm run build:shared && concurrently -n api,web -c cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run dev --workspace @shadowscan/api",
+    "dev:web": "npm run dev --workspace @shadowscan/web",
+    "build": "npm run build:shared && npm run build --workspace @shadowscan/api && npm run build --workspace @shadowscan/web",
+    "typecheck": "npm run build:shared && npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspace @shadowscan/api",
+    "seed": "npm run seed --workspace @shadowscan/api --",
+    "db:check": "npm run db:check --workspace @shadowscan/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  },
+  "overrides": {
+    "vite": "^6.0.7"
+  }
+}

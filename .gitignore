@@ -1,0 +1,29 @@
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+# …but the sample proxy log is a fixture, not a runtime artefact.
+!samples/*.log
+.vite/
+.vercel
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Never commit real customer telemetry.
+# Leading slash anchors this to the repository root — an unanchored `uploads/`
+# also matches apps/api/src/modules/uploads/, which is source code.
+/uploads/
+*.local.csv
+*.local.json
