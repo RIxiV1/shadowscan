@@ -1,0 +1,139 @@
+@import 'tailwindcss';
+
+/**
+ * ============================================================================
+ *  DESIGN TOKENS
+ * ============================================================================
+ *
+ * Dark-only, on purpose. Security consoles are used in dim rooms for long
+ * stretches, every product in this category (Defender, Falcon, Chronicle) ships
+ * dark-first, and supporting one theme properly beats supporting two badly.
+ *
+ * The palette is near-neutral with a single cyan accent. Colour is reserved for
+ * meaning — risk bands and policy states — so that a red cell on the screen
+ * always signifies something rather than decorating something. That constraint
+ * is what makes an operations UI readable at a glance.
+ *
+ * No web fonts. The system stack renders instantly, needs no network request
+ * (which a strict CSP would block anyway), and on Windows resolves to Segoe UI,
+ * which is exactly the typeface this class of product is expected to look like.
+ */
+@theme {
+  --color-canvas: #07080b;
+  --color-surface: #0c0e13;
+  --color-elevated: #12151c;
+  --color-overlay: #161a23;
+
+  --color-line: #1b202a;
+  --color-line-strong: #2b3342;
+
+  --color-fg: #e8ebf1;
+  --color-fg-muted: #99a1b3;
+  --color-fg-subtle: #666f80;
+
+  --color-accent: #22d3ee;
+  --color-accent-soft: #0e3a45;
+  --color-accent-fg: #04161b;
+
+  --color-risk-low: #34d399;
+  --color-risk-medium: #fbbf24;
+  --color-risk-high: #fb923c;
+  --color-risk-critical: #f87171;
+
+  /*
+   * Chart fills are a SEPARATE set from the risk tokens above, and deliberately
+   * darker. Text and badges are judged on WCAG text contrast, where the light
+   * 400-weight shades read best; large chart fills are judged on the dark-surface
+   * lightness band (OKLCH L 0.48–0.67) plus colour-vision separation, where those
+   * same shades glow and lose their distinctness from one another.
+   *
+   * These three were selected by running the palette validator against the chart
+   * surface (#0c0e13) on the all-pairs list. Result: lightness band PASS, chroma
+   * PASS, normal-vision ΔE 20.0 PASS, contrast PASS, CVD ΔE 7.9 WARN. A WARN in
+   * the 6–8 band is only permissible with secondary encoding, so every chart that
+   * uses them also carries an icon-and-text legend, direct value labels, and a
+   * 2px surface gap between adjacent segments. Colour is never the only signal.
+   */
+  --color-chart-approved: #059669;
+  --color-chart-unknown: #d97706;
+  --color-chart-blocked: #be123c;
+  /* Single-hue magnitude fill for one-series bar charts. Validated standalone. */
+  --color-chart-volume: #0891b2;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  --radius-panel: 0.75rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Visible focus is an accessibility requirement, not a style preference. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-fg);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 999px;
+    border: 2px solid var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a4353;
+  }
+
+  /* Recharts injects its own focus outline on the SVG wrapper; suppress it so
+     keyboard focus lands on the interactive controls instead. */
+  .recharts-wrapper:focus {
+    outline: none;
+  }
+}
+
+@layer utilities {
+  /* Subtle top-lit gradient used on the app shell and auth screen. */
+  .bg-mesh {
+    background-image:
+      radial-gradient(60rem 30rem at 15% -10%, rgba(34, 211, 238, 0.07), transparent 60%),
+      radial-gradient(45rem 25rem at 90% 0%, rgba(129, 140, 248, 0.06), transparent 55%);
+  }
+
+  .panel {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
