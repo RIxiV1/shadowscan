@@ -9,7 +9,7 @@ export const Table = forwardRef<HTMLTableElement, HTMLAttributes<HTMLTableElemen
     <div className="w-full overflow-x-auto">
       <table
         ref={ref}
-        className={cn('w-full caption-bottom border-collapse text-[13px]', className)}
+        className={cn('zebra w-full caption-bottom border-collapse text-[13px]', className)}
         {...props}
       />
     </div>

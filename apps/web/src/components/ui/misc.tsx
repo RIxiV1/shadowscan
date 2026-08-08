@@ -73,7 +73,7 @@ export const TabsList = forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.List
     ref={ref}
-    className={cn('inline-flex items-center gap-1 rounded-[3px] border border-line bg-surface p-0.5', className)}
+    className={cn('inline-flex items-center gap-1 rounded-[4px] border border-line bg-surface p-0.5', className)}
     {...props}
   />
 ));
@@ -99,5 +99,5 @@ export const TabsContent = TabsPrimitive.Content;
 // -------------------------------------------------------------- skeleton ---
 
 export function Skeleton({ className, ...props }: HTMLAttributes<HTMLDivElement>): JSX.Element {
-  return <div className={cn('animate-pulse rounded-md bg-elevated', className)} {...props} />;
+  return <div className={cn('animate-pulse rounded-[3px] bg-elevated', className)} {...props} />;
 }

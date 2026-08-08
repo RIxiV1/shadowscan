@@ -29,7 +29,7 @@ export function ReportDetailPage(): JSX.Element {
     return (
       <>
         <PageHeader title="Report" />
-        <LoadingRows rows={8} className="rounded-xl border border-line bg-surface" />
+        <LoadingRows rows={8} className="rounded-[5px] border border-line bg-surface" />
       </>
     );
   }

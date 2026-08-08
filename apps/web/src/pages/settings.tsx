@@ -28,7 +28,7 @@ export function SettingsPage(): JSX.Element {
     return (
       <>
         <PageHeader title="Risk settings" />
-        <LoadingRows rows={6} className="rounded-xl border border-line bg-surface" />
+        <LoadingRows rows={6} className="rounded-[5px] border border-line bg-surface" />
       </>
     );
   }
@@ -109,7 +109,7 @@ export function SettingsPage(): JSX.Element {
         }
       />
 
-      <div className="mb-4 flex items-start gap-2 rounded-lg border border-accent/25 bg-accent/5 px-4 py-3">
+      <div className="mb-2 flex items-start gap-2 rounded-[5px] border-l-2 border-accent/60 bg-accent/5 px-3 py-2">
         <Info className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
         <p className="text-xs leading-relaxed text-fg-muted">
           Changes apply to <span className="font-medium text-fg">future ingestion only</span>. Events already
@@ -119,12 +119,12 @@ export function SettingsPage(): JSX.Element {
         </p>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-2 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Provider weights</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-0">
             <NumberField
               id="unknownProviderWeight"
               label="Unrecognised AI service"
@@ -165,7 +165,7 @@ export function SettingsPage(): JSX.Element {
           <CardHeader>
             <CardTitle>Content and timing</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-0">
             <NumberField
               id="sensitiveKeywordWeight"
               label="Per confidential keyword"
@@ -188,7 +188,7 @@ export function SettingsPage(): JSX.Element {
               disabled={disabled}
               onChange={(value) => setForm({ ...form, sensitiveIdentifierWeight: value })}
             />
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 divide-x divide-line/70">
               <NumberField
                 id="offHoursWeight"
                 label="Off-hours points"
@@ -227,7 +227,7 @@ export function SettingsPage(): JSX.Element {
         </Card>
       </div>
 
-      <Card className="mt-3">
+      <Card className="mt-2">
         <CardHeader>
           <CardTitle>Confidential keyword list</CardTitle>
           <p className="text-xs text-fg-subtle">
@@ -263,7 +263,7 @@ export function SettingsPage(): JSX.Element {
             {form.confidentialKeywords.map((keyword) => (
               <span
                 key={keyword}
-                className="inline-flex items-center gap-1 rounded-full border border-line-strong bg-elevated py-1 pl-2.5 pr-1 text-xs text-fg-muted"
+                className="inline-flex items-center gap-1 rounded-[3px] border border-line-strong bg-elevated py-0.5 pl-2 pr-0.5 text-[11px] text-fg-muted"
               >
                 {keyword}
                 {isAdmin ? (
@@ -293,6 +293,11 @@ export function SettingsPage(): JSX.Element {
   );
 }
 
+/**
+ * Label and explanation on the left, control on the right, hairline between rows.
+ * Stacked label-over-input made each field three tall blocks and the page ran to
+ * two screens for nine numbers.
+ */
 function NumberField({
   id,
   label,
@@ -315,8 +320,13 @@ function NumberField({
   onChange: (value: number) => void;
 }): JSX.Element {
   return (
-    <div className="space-y-1.5">
-      <Label htmlFor={id}>{label}</Label>
+    <div className="flex items-start justify-between gap-4 border-b border-line/70 px-3 py-2.5 last:border-0">
+      <div className="min-w-0">
+        <Label htmlFor={id} className="text-[13px] text-fg">
+          {label}
+        </Label>
+        {hint ? <p className="mt-0.5 text-[11px] leading-snug text-fg-subtle">{hint}</p> : null}
+      </div>
       <Input
         id={id}
         type="number"
@@ -330,9 +340,8 @@ function NumberField({
           const next = Number(event.target.value);
           if (Number.isFinite(next)) onChange(next);
         }}
-        className="max-w-32"
+        className="w-20 shrink-0 text-right tabular-nums"
       />
-      {hint ? <p className="text-[11px] leading-relaxed text-fg-subtle">{hint}</p> : null}
     </div>
   );
 }

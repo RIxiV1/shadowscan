@@ -9,17 +9,21 @@
  * Windows, which is what this kind of tool is expected to look like anyway.
  */
 @theme {
-  --color-canvas: #0a0b0d;
-  --color-surface: #101216;
-  --color-elevated: #171a1f;
-  --color-overlay: #1d2127;
+  /*
+   * Cool blue-grey rather than neutral grey. A few points of blue in the dark
+   * steps is the difference between "unstyled" and "designed" and costs nothing.
+   */
+  --color-canvas: #08090d;
+  --color-surface: #0f1117;
+  --color-elevated: #161922;
+  --color-overlay: #1c202a;
 
-  --color-line: #23262d;
-  --color-line-strong: #31363f;
+  --color-line: #21252f;
+  --color-line-strong: #2f3542;
 
-  --color-fg: #e6e8ec;
-  --color-fg-muted: #9298a4;
-  --color-fg-subtle: #626873;
+  --color-fg: #e7e9ef;
+  --color-fg-muted: #949bab;
+  --color-fg-subtle: #646b7c;
 
   /* Restrained blue. Links, focus, active nav, selected rows. Nothing else. */
   --color-accent: #5590d8;
@@ -50,8 +54,8 @@
     sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Sharp. Rounded corners on everything is what makes a console look like a toy. */
-  --radius-panel: 3px;
+  /* Sharp, but 3px read as brutal. 5px still says console, not toy. */
+  --radius-panel: 5px;
 }
 
 @layer base {
@@ -123,6 +127,24 @@
 }
 
 @layer utilities {
+  /*
+   * Depth, sparingly. A 1px inset highlight along the top edge plus a soft drop
+   * shadow is what makes a panel read as a physical surface instead of a div with
+   * a border. It's the single cheapest thing that separates a designed interface
+   * from an unstyled one, and at these opacities it never announces itself.
+   */
+  .raised {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.035),
+      0 1px 2px rgba(0, 0, 0, 0.4),
+      0 4px 12px -4px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Faint banding. Helps the eye track across a wide row and adds texture. */
+  .zebra tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.014);
+  }
+
   .panel {
     background-color: var(--color-surface);
     border: 1px solid var(--color-line);

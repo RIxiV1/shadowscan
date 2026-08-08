@@ -62,7 +62,7 @@ export function ChartTooltip({
   footer?: ReactNode;
 }): JSX.Element {
   return (
-    <div className="pointer-events-none min-w-40 rounded-lg border border-line-strong bg-overlay/95 px-3 py-2 shadow-xl shadow-black/60 backdrop-blur-sm">
+    <div className="pointer-events-none min-w-40 rounded-[5px] border border-line-strong bg-overlay/95 px-3 py-2 shadow-xl shadow-black/60 backdrop-blur-sm">
       <p className="mb-1.5 text-xs font-medium text-fg">{title}</p>
       <div className="space-y-1">
         {rows.map((row) => (

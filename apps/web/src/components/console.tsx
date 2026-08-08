@@ -11,7 +11,7 @@ export function Strip({ children, className }: { children: ReactNode; className?
   return (
     <div
       className={cn(
-        'mb-2 flex flex-wrap rounded-[3px] border border-line bg-surface',
+        'raised mb-2 flex flex-wrap rounded-[5px] border border-line bg-surface',
         className,
       )}
     >
@@ -78,12 +78,57 @@ export function StripStat({
   );
 }
 
+/**
+ * Labelled proportional bar. Used for the three inputs to the org risk score, so
+ * the weighting is visible rather than something you have to be told about.
+ */
+export function Meter({
+  label,
+  detail,
+  ratio,
+  weight,
+  tone = 'muted',
+}: {
+  label: string;
+  detail: string;
+  /** 0-1. Clamped. */
+  ratio: number;
+  /** Share of the overall score this input carries, e.g. "40%". */
+  weight: string;
+  tone?: Tone;
+}): JSX.Element {
+  const fill = {
+    default: 'bg-fg',
+    muted: 'bg-fg-muted',
+    low: 'bg-risk-low',
+    medium: 'bg-risk-medium',
+    high: 'bg-risk-high',
+    critical: 'bg-risk-critical',
+  }[tone];
+
+  return (
+    <div className="min-w-0">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="truncate text-[11px] text-fg-muted">{label}</span>
+        <span className="tabular shrink-0 text-[11px] font-medium text-fg">{detail}</span>
+      </div>
+      <div className="mt-1 h-[3px] overflow-hidden rounded-full bg-elevated">
+        <div
+          className={cn('h-full rounded-full', fill)}
+          style={{ width: `${Math.round(Math.min(1, Math.max(0, ratio)) * 100)}%` }}
+        />
+      </div>
+      <span className="mt-1 block text-[10px] text-fg-subtle">{weight} of score</span>
+    </div>
+  );
+}
+
 // Flat toolbar. Replaces the padded Card that used to wrap every filter row.
 export function Toolbar({ children, className }: { children: ReactNode; className?: string }): JSX.Element {
   return (
     <div
       className={cn(
-        'mb-2 flex flex-wrap items-center gap-1.5 rounded-[3px] border border-line bg-surface px-2 py-1.5',
+        'raised mb-2 flex flex-wrap items-center gap-1.5 rounded-[5px] border border-line bg-surface px-2 py-1.5',
         className,
       )}
     >

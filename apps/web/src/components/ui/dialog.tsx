@@ -23,7 +23,7 @@ export const DialogContent = forwardRef<
     >
       {children}
       <DialogPrimitive.Close
-        className="absolute right-3 top-3 rounded-md p-1 text-fg-subtle transition-colors hover:bg-elevated hover:text-fg"
+        className="absolute right-3 top-3 rounded-[3px] p-1 text-fg-subtle transition-colors hover:bg-elevated hover:text-fg"
         aria-label="Close"
       >
         <X className="size-4" />

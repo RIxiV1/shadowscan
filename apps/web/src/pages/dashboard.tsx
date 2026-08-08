@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { DailyUsageChart } from '@/components/charts/daily-usage-chart';
 import { PolicyDonut } from '@/components/charts/policy-donut';
 import { UsageByToolChart } from '@/components/charts/usage-by-tool-chart';
+import { Meter } from '@/components/console';
 import { RiskBandBadge, ScoreMeter } from '@/components/indicators';
 import { EmptyState, ErrorState, LoadingRows, PageHeader } from '@/components/layout-parts';
 import { StatCard } from '@/components/stat-card';
@@ -21,6 +22,13 @@ const WINDOWS = [
   { value: '90', label: '90 days' },
   { value: '365', label: '12 months' },
 ];
+
+const BAND_BAR = {
+  low: 'bg-risk-low',
+  medium: 'bg-risk-medium',
+  high: 'bg-risk-high',
+  critical: 'bg-risk-critical',
+} as const;
 
 const BAND_TEXT = {
   low: 'text-risk-low',
@@ -97,33 +105,57 @@ export function DashboardPage(): JSX.Element {
     <>
       <PageHeader title="Overview" actions={picker} />
 
-      {/* Score and volume read as one instrument strip rather than six tiles. */}
-      <div className="mb-2 flex flex-col rounded-[3px] border border-line bg-surface xl:flex-row">
-        <div className="flex items-center gap-4 border-line px-4 py-2.5 xl:w-64 xl:border-r">
-          <div>
-            <p className="eyebrow">Risk score</p>
-            <div className="mt-1 flex items-baseline gap-1.5">
-              <span className={cn('tabular text-[34px] font-semibold leading-none', BAND_TEXT[cards.riskBand])}>
-                {cards.riskScore}
-              </span>
-              <span className="text-[12px] text-fg-subtle">/100</span>
+      {/* Score and volume as one instrument strip. The score gets a track and its
+          three inputs get bars, so the number is shown rather than asserted. */}
+      <div className="raised mb-2 flex flex-col rounded-[5px] border border-line bg-surface xl:flex-row">
+        <div className="border-line px-4 py-3 xl:w-[340px] xl:border-r">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="eyebrow">Organisation risk</p>
+              <div className="mt-1.5 flex items-baseline gap-1.5">
+                <span
+                  className={cn('tabular text-[40px] font-semibold leading-none', BAND_TEXT[cards.riskBand])}
+                  style={{ textShadow: '0 0 24px currentColor', opacity: 0.999 }}
+                >
+                  {cards.riskScore}
+                </span>
+                <span className="text-[12px] text-fg-subtle">/100</span>
+              </div>
             </div>
-            <div className="mt-1.5">
-              <RiskBandBadge band={cards.riskBand} />
-            </div>
+            <RiskBandBadge band={cards.riskBand} />
           </div>
-          {/* The three inputs to the score, weighted 40/35/25. Shown next to it
-              so the number is never just asserted. */}
-          <dl className="ml-auto grid grid-cols-[auto_auto] gap-x-3 gap-y-1 text-[11px]">
-            <dt className="text-fg-subtle">Unmanaged</dt>
-            <dd className="tabular text-right font-medium text-fg-muted">{shadowShare}%</dd>
-            <dt className="text-fg-subtle">Exposure</dt>
-            <dd className="tabular text-right font-medium text-fg-muted">
-              {formatNumber(cards.sensitiveHits)}
-            </dd>
-            <dt className="text-fg-subtle">People at risk</dt>
-            <dd className="tabular text-right font-medium text-fg-muted">{elevated}</dd>
-          </dl>
+
+          <div className="mt-2.5 h-[5px] overflow-hidden rounded-full bg-elevated">
+            <div
+              className={cn('h-full rounded-full', BAND_BAR[cards.riskBand])}
+              style={{ width: `${Math.min(100, cards.riskScore)}%` }}
+            />
+          </div>
+
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            <Meter
+              label="Unmanaged"
+              detail={`${shadowShare}%`}
+              ratio={shadowShare / 100}
+              weight="40%"
+              tone={shadowShare > 50 ? 'high' : 'medium'}
+            />
+            <Meter
+              label="Exposure"
+              detail={formatNumber(cards.sensitiveHits)}
+              // Matches the engine: 20% of requests carrying content saturates.
+              ratio={cards.aiRequests === 0 ? 0 : (cards.sensitiveHits / cards.aiRequests) * 5}
+              weight="35%"
+              tone={cards.sensitiveHits > 0 ? 'critical' : 'muted'}
+            />
+            <Meter
+              label="Concentration"
+              detail={`${elevated} ${elevated === 1 ? 'person' : 'people'}`}
+              ratio={data.highRiskActors.length === 0 ? 0 : elevated / data.highRiskActors.length}
+              weight="25%"
+              tone={elevated > 0 ? 'high' : 'muted'}
+            />
+          </div>
         </div>
 
         <div className="flex flex-1 flex-wrap border-t border-line xl:border-t-0">

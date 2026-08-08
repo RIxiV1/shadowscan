@@ -1,8 +1,11 @@
 import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
+// `block` matters: inputs are inline-block by default, so a narrow one (max-w-32
+// on a settings field) sits on the same line as its own label and the two
+// collide. Full-width inputs hid this because they filled the line anyway.
 const field =
-  'w-full rounded-[3px] border border-line-strong bg-elevated px-2 text-[13px] text-fg placeholder:text-fg-subtle focus:border-accent focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-risk-critical';
+  'block w-full rounded-[4px] border border-line-strong bg-elevated px-2 text-[13px] text-fg placeholder:text-fg-subtle focus:border-accent focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-risk-critical';
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => (

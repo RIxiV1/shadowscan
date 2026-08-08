@@ -248,7 +248,7 @@ function UploadResultPanel({
       </CardHeader>
 
       {upload.errors.length > 0 ? (
-        <div className="mx-5 mb-3 rounded-md border border-risk-medium/30 bg-risk-medium/5 px-3 py-2">
+        <div className="mx-3 mb-2 rounded-[4px] border-l-2 border-risk-medium/30 bg-risk-medium/5 px-3 py-2">
           <p className="mb-1 text-xs font-medium text-risk-medium">Parser notices</p>
           <ul className="space-y-0.5 text-[11px] text-fg-muted">
             {upload.errors.slice(0, 5).map((message, index) => (
