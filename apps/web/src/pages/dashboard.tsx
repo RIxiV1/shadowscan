@@ -112,19 +112,17 @@ export function DashboardPage(): JSX.Element {
               <RiskBandBadge band={cards.riskBand} />
             </div>
           </div>
-          <dl className="ml-auto space-y-1 text-right text-[11px] text-fg-subtle">
-            <div>
-              <dt className="inline">unmanaged </dt>
-              <dd className="tabular inline font-medium text-fg-muted">{shadowShare}%</dd>
-            </div>
-            <div>
-              <dt className="inline">exposure </dt>
-              <dd className="tabular inline font-medium text-fg-muted">{formatNumber(cards.sensitiveHits)}</dd>
-            </div>
-            <div>
-              <dt className="inline">at risk </dt>
-              <dd className="tabular inline font-medium text-fg-muted">{elevated}</dd>
-            </div>
+          {/* The three inputs to the score, weighted 40/35/25. Shown next to it
+              so the number is never just asserted. */}
+          <dl className="ml-auto grid grid-cols-[auto_auto] gap-x-3 gap-y-1 text-[11px]">
+            <dt className="text-fg-subtle">Unmanaged</dt>
+            <dd className="tabular text-right font-medium text-fg-muted">{shadowShare}%</dd>
+            <dt className="text-fg-subtle">Exposure</dt>
+            <dd className="tabular text-right font-medium text-fg-muted">
+              {formatNumber(cards.sensitiveHits)}
+            </dd>
+            <dt className="text-fg-subtle">People at risk</dt>
+            <dd className="tabular text-right font-medium text-fg-muted">{elevated}</dd>
           </dl>
         </div>
 

@@ -26,8 +26,10 @@ export function DailyUsageChart({ data }: { data: DashboardSummary['dailyUsage']
     <div className="space-y-3">
       <PolicyLegend
         items={[
-          { policy: 'approved', value: totals.approved },
-          { policy: 'blocked', value: totals.shadow },
+          { policy: 'approved', value: totals.approved, label: 'Approved' },
+          // Not "Blocked": this band stacks unassessed and blocked together, and
+          // labelling it Blocked contradicts the blocked count in the donut.
+          { policy: 'blocked', value: totals.shadow, label: 'Shadow AI' },
         ]}
       />
       <div className="h-64 w-full">
@@ -35,12 +37,12 @@ export function DailyUsageChart({ data }: { data: DashboardSummary['dailyUsage']
           <AreaChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -18 }}>
             <defs>
               <linearGradient id="fill-approved" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={POLICY_FILL.approved} stopOpacity={0.55} />
-                <stop offset="100%" stopColor={POLICY_FILL.approved} stopOpacity={0.08} />
+                <stop offset="0%" stopColor={POLICY_FILL.approved} stopOpacity={0.28} />
+                <stop offset="100%" stopColor={POLICY_FILL.approved} stopOpacity={0.02} />
               </linearGradient>
               <linearGradient id="fill-shadow" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={POLICY_FILL.blocked} stopOpacity={0.55} />
-                <stop offset="100%" stopColor={POLICY_FILL.blocked} stopOpacity={0.08} />
+                <stop offset="0%" stopColor={POLICY_FILL.blocked} stopOpacity={0.28} />
+                <stop offset="100%" stopColor={POLICY_FILL.blocked} stopOpacity={0.02} />
               </linearGradient>
             </defs>
 

@@ -90,22 +90,25 @@ export function PolicyLegend({
   items,
   className,
 }: {
-  items: Array<{ policy: PolicyStatus; value?: number }>;
+  // `label` overrides the policy name. The daily chart stacks unassessed and
+  // blocked into one "shadow AI" series, and calling that series "Blocked"
+  // contradicts the blocked count shown in the donut beside it.
+  items: Array<{ policy: PolicyStatus; value?: number; label?: string }>;
   className?: string;
 }): JSX.Element {
   return (
-    <ul className={cn('flex flex-wrap items-center gap-x-4 gap-y-1.5', className)}>
-      {items.map(({ policy, value }) => {
+    <ul className={cn('flex flex-wrap items-center gap-x-3 gap-y-1', className)}>
+      {items.map(({ policy, value, label }) => {
         const Icon = POLICY_ICON[policy];
         return (
-          <li key={policy} className="flex items-center gap-1.5 text-xs text-fg-muted">
+          <li key={policy} className="flex items-center gap-1.5 text-[11px] text-fg-muted">
             <span
-              className="size-2.5 shrink-0 rounded-[3px]"
+              className="size-2 shrink-0 rounded-[1px]"
               style={{ backgroundColor: POLICY_FILL[policy] }}
               aria-hidden
             />
             <Icon className="size-3 shrink-0 text-fg-subtle" aria-hidden />
-            <span>{POLICY_LABEL[policy]}</span>
+            <span>{label ?? POLICY_LABEL[policy]}</span>
             {value !== undefined ? (
               <span className="tabular font-medium text-fg">{formatNumber(value)}</span>
             ) : null}

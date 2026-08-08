@@ -21,7 +21,7 @@ export function UsageByToolChart({ data }: { data: DashboardSummary['usageByTool
   return (
     <div className="space-y-3">
       <PolicyLegend items={presentPolicies.map((policy) => ({ policy }))} />
-      <div style={{ height: Math.max(180, top.length * 34 + 16) }} className="w-full">
+      <div style={{ height: Math.max(160, top.length * 26 + 12) }} className="w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={top} layout="vertical" margin={{ top: 0, right: 44, bottom: 0, left: 0 }} barCategoryGap={6}>
             <XAxis type="number" hide />
@@ -29,11 +29,11 @@ export function UsageByToolChart({ data }: { data: DashboardSummary['usageByTool
               type="category"
               dataKey="name"
               {...AXIS_STYLE}
-              width={132}
-              tick={{ fill: 'var(--color-fg-muted)', fontSize: 12 }}
+              width={124}
+              tick={{ fill: 'var(--color-fg-muted)', fontSize: 11 }}
             />
             <Tooltip content={renderTooltip} cursor={{ fill: 'var(--color-elevated)', opacity: 0.5 }} />
-            <Bar dataKey="requests" radius={[0, 4, 4, 0]} maxBarSize={18} isAnimationActive={false}>
+            <Bar dataKey="requests" radius={[0, 2, 2, 0]} maxBarSize={14} fillOpacity={0.82} isAnimationActive={false}>
               {top.map((tool) => (
                 <Cell key={tool.key} fill={POLICY_FILL[tool.policy]} />
               ))}
@@ -44,7 +44,7 @@ export function UsageByToolChart({ data }: { data: DashboardSummary['usageByTool
                 position="right"
                 offset={8}
                 formatter={(value: number) => formatNumber(value)}
-                style={{ fill: 'var(--color-fg-muted)', fontSize: 11, fontVariantNumeric: 'tabular-nums' }}
+                style={{ fill: 'var(--color-fg-muted)', fontSize: 10, fontVariantNumeric: 'tabular-nums' }}
               />
             </Bar>
           </BarChart>

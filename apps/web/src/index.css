@@ -77,6 +77,22 @@
     outline-offset: 1px;
   }
 
+  /*
+   * Chrome paints autofilled fields a fixed pale yellow that ignores every
+   * background rule, which on a dark form looks like the page is broken. The
+   * inset shadow is the only way to cover it, and the absurd transition delay
+   * stops Chrome repainting it on focus.
+   */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-fg);
+    -webkit-box-shadow: 0 0 0 1000px var(--color-elevated) inset;
+    caret-color: var(--color-fg);
+    transition: background-color 100000s ease-in-out 0s;
+  }
+
   ::selection {
     background-color: var(--color-accent-soft);
     color: var(--color-fg);
