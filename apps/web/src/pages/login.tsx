@@ -50,7 +50,7 @@ export function LoginPage(): JSX.Element {
       <div className="w-full max-w-[340px]">
         <div className="mb-5 flex items-center gap-2">
           <ShieldHalf className="size-4 text-accent" aria-hidden />
-          <span className="text-[13px] font-semibold tracking-tight">ShadowScan</span>
+          <span className="text-body font-semibold tracking-tight">ShadowScan</span>
           <span className="eyebrow ml-auto">console</span>
         </div>
 
@@ -86,7 +86,7 @@ export function LoginPage(): JSX.Element {
             {error ? (
               <p
                 role="alert"
-                className="border-l-2 border-risk-critical pl-2 text-[11px] leading-relaxed text-risk-critical"
+                className="border-l-2 border-risk-critical pl-2 text-meta leading-relaxed text-risk-critical"
               >
                 {error.message}
               </p>
@@ -101,7 +101,7 @@ export function LoginPage(): JSX.Element {
           </div>
         </form>
 
-        <p className="mt-3 text-[10px] leading-relaxed text-fg-subtle">
+        <p className="mt-3 text-micro leading-relaxed text-fg-subtle">
           Authorised use only. Sign-in attempts are recorded.
         </p>
       </div>

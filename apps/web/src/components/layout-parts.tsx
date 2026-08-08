@@ -21,12 +21,12 @@ export function PageHeader({
   return (
     <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-2.5">
       <div className="flex min-w-0 items-baseline gap-3">
-        <h1 className="text-[15px] font-semibold text-fg">{title}</h1>
+        <h1 className="text-title font-semibold text-fg">{title}</h1>
         {description ? (
-          <p className="hidden truncate text-[12px] text-fg-subtle lg:block">{description}</p>
+          <p className="hidden truncate text-meta text-fg-subtle lg:block">{description}</p>
         ) : null}
       </div>
-      {actions ? <div className="flex shrink-0 items-center gap-1.5">{actions}</div> : null}
+      {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
     </div>
   );
 }
@@ -46,8 +46,8 @@ export function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-10 text-center">
       <Icon className="size-4 text-fg-subtle" aria-hidden />
-      <p className="text-[13px] text-fg">{title}</p>
-      <p className="mx-auto max-w-sm text-[11px] leading-relaxed text-fg-subtle">{description}</p>
+      <p className="text-body text-fg">{title}</p>
+      <p className="mx-auto max-w-sm text-meta leading-relaxed text-fg-subtle">{description}</p>
       {action ? <div className="mt-1">{action}</div> : null}
     </div>
   );
@@ -58,8 +58,8 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-10 text-center">
       <AlertTriangle className="size-4 text-risk-high" aria-hidden />
       <div>
-        <p className="text-[13px] text-fg">Could not load this view</p>
-        <p className="mx-auto max-w-md text-[11px] text-fg-subtle">{message}</p>
+        <p className="text-body text-fg">Could not load this view</p>
+        <p className="mx-auto max-w-md text-meta text-fg-subtle">{message}</p>
       </div>
       {onRetry ? (
         <Button size="sm" onClick={onRetry}>
@@ -105,7 +105,7 @@ export function Pagination({
 
   return (
     <div className="flex items-center justify-between border-t border-line px-3 py-1.5">
-      <p className="tabular text-[11px] text-fg-subtle">
+      <p className="tabular text-meta text-fg-subtle">
         {formatNumber(first)}–{formatNumber(last)} of {formatNumber(total)}
       </p>
       <div className="flex items-center gap-1">
@@ -118,7 +118,7 @@ export function Pagination({
         >
           <ChevronLeft />
         </Button>
-        <span className="tabular px-1.5 text-[11px] text-fg-muted">
+        <span className="tabular px-1.5 text-meta text-fg-muted">
           {page} / {totalPages}
         </span>
         <Button

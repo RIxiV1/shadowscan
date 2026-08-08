@@ -7,7 +7,7 @@ import type { IndexedProvider } from './detector.js';
 // from. The other two normalise, otherwise the numbers just track volume.
 
 // Raw event score that counts as "as bad as it gets" when picking a band.
-// Tuned so an approved tool is low, an unassessed one medium, a blocked one
+// Tuned so an approved tool is low, a not-assessed one medium, a blocked one
 // high, and anything with confidential content in it critical.
 export const EVENT_SATURATION_SCORE = 20;
 

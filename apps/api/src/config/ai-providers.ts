@@ -38,7 +38,7 @@ export const AI_PROVIDERS: readonly ProviderSeed[] = [
     defaultPolicy: 'unknown',
     dataRegion: 'US',
     trainsOnUserData: false,
-    notes: 'Direct API traffic. Often indicates an unmanaged application, not a browser user.',
+    notes: 'Direct API traffic. Often indicates an unsanctioned application, not a browser user.',
   },
   {
     key: 'anthropic-claude',

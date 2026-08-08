@@ -111,7 +111,7 @@ export function SettingsPage(): JSX.Element {
 
       <div className="mb-2 flex items-start gap-2 rounded-[5px] border-l-2 border-accent/60 bg-accent/5 px-3 py-2">
         <Info className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
-        <p className="text-xs leading-relaxed text-fg-muted">
+        <p className="text-meta leading-relaxed text-fg-muted">
           Changes apply to <span className="font-medium text-fg">future ingestion only</span>. Events already
           stored keep the score they were given, so a report generated last month still shows the numbers it
           was signed off with. To rescore historical data, delete the upload and ingest it again.
@@ -128,7 +128,7 @@ export function SettingsPage(): JSX.Element {
             <NumberField
               id="unknownProviderWeight"
               label="Unrecognised AI service"
-              hint="Points for a host that matched a detection heuristic but is not in the registry. Highest single provider weight by design — an unassessed tool has no data-processing agreement behind it."
+              hint="Points for a host that matched a detection heuristic but is not in the registry. Highest single provider weight by design — a tool nobody has assessed has no data-processing agreement behind it."
               value={form.unknownProviderWeight}
               min={0}
               max={50}
@@ -220,7 +220,7 @@ export function SettingsPage(): JSX.Element {
                 onChange={(value) => setForm({ ...form, offHoursEnd: value })}
               />
             </div>
-            <p className="text-[11px] text-fg-subtle">
+            <p className="text-meta text-fg-subtle">
               The window may wrap midnight — 21 to 6 means 21:00 through 05:59.
             </p>
           </CardContent>
@@ -230,7 +230,7 @@ export function SettingsPage(): JSX.Element {
       <Card className="mt-2">
         <CardHeader>
           <CardTitle>Confidential keyword list</CardTitle>
-          <p className="text-xs text-fg-subtle">
+          <p className="text-meta text-fg-subtle">
             Matched case-insensitively on word boundaries, so <span className="font-mono">nda</span> does not
             fire inside &ldquo;Rwanda&rdquo;. These are checked against URL query strings and any prompt column
             your log source provides.
@@ -259,11 +259,11 @@ export function SettingsPage(): JSX.Element {
             </div>
           ) : null}
 
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {form.confidentialKeywords.map((keyword) => (
               <span
                 key={keyword}
-                className="inline-flex items-center gap-1 rounded-[3px] border border-line-strong bg-elevated py-0.5 pl-2 pr-0.5 text-[11px] text-fg-muted"
+                className="inline-flex items-center gap-1 rounded-[3px] border border-line-strong bg-elevated py-0.5 pl-2 pr-0.5 text-meta text-fg-muted"
               >
                 {keyword}
                 {isAdmin ? (
@@ -284,7 +284,7 @@ export function SettingsPage(): JSX.Element {
               </span>
             ))}
           </div>
-          <p className="mt-3 text-[11px] text-fg-subtle">
+          <p className="mt-3 text-meta text-fg-subtle">
             {form.confidentialKeywords.length} of 200 terms.
           </p>
         </CardContent>
@@ -322,10 +322,10 @@ function NumberField({
   return (
     <div className="flex items-start justify-between gap-4 border-b border-line/70 px-3 py-2.5 last:border-0">
       <div className="min-w-0">
-        <Label htmlFor={id} className="text-[13px] text-fg">
+        <Label htmlFor={id} className="text-body text-fg">
           {label}
         </Label>
-        {hint ? <p className="mt-0.5 text-[11px] leading-snug text-fg-subtle">{hint}</p> : null}
+        {hint ? <p className="mt-0.5 text-meta leading-snug text-fg-subtle">{hint}</p> : null}
       </div>
       <Input
         id={id}

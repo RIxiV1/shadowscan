@@ -43,7 +43,7 @@ export function buildRecommendations(input: RecommendationInput): Recommendation
     ];
   }
 
-  // ------------------------------------------------- unmanaged AI exposure ---
+  // ------------------------------------------------- shadow AI exposure ---
   const shadowRatio = input.shadowAiRequests / input.aiRequests;
   if (shadowRatio >= 0.6) {
     recommendations.push({
@@ -54,8 +54,8 @@ export function buildRecommendations(input: RecommendationInput): Recommendation
   } else if (shadowRatio >= 0.3) {
     recommendations.push({
       severity: 'high',
-      title: `${percent(shadowRatio)} of AI usage is unsanctioned`,
-      detail: `A significant minority of AI traffic is outside policy. Triage the unassessed tools in the inventory below: approve the ones with an acceptable data-processing agreement, block the rest, and leave nothing in "unknown".`,
+      title: `${percent(shadowRatio)} of AI usage is shadow AI`,
+      detail: `A significant minority of AI traffic is outside policy. Triage the not-assessed tools in the inventory below: approve the ones with an acceptable data-processing agreement, block the rest, and leave nothing in "not assessed".`,
     });
   }
 
@@ -135,7 +135,7 @@ export function buildRecommendations(input: RecommendationInput): Recommendation
       severity: 'medium',
       title: `${highActors.length} individuals in the high-risk band`,
       detail:
-        'Several people are driving a disproportionate share of unmanaged AI usage. Run targeted awareness training with these teams rather than an organisation-wide broadcast.',
+        'Several people are driving a disproportionate share of shadow AI usage. Run targeted awareness training with these teams rather than an organisation-wide broadcast.',
     });
   }
 
@@ -145,7 +145,7 @@ export function buildRecommendations(input: RecommendationInput): Recommendation
       severity: 'medium',
       title: 'No approved AI tool is in use',
       detail:
-        'Every detected request went to an unassessed or blocked service, which means staff have no sanctioned option. Approving one general-purpose assistant with an enterprise agreement is the single highest-leverage action available: it converts shadow usage into governed usage without a fight.',
+        'Every detected request went to a service that is blocked or not assessed, which means staff have no sanctioned option. Approving one general-purpose assistant with an enterprise agreement is the single highest-leverage action available: it converts shadow usage into governed usage without a fight.',
     });
   }
 

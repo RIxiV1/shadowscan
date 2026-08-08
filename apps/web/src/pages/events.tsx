@@ -1,6 +1,6 @@
 import type { AiEventDto, EventListQuery, PolicyStatus, RiskBand } from '@shadowscan/shared';
 import { POLICY_STATUSES, RISK_BANDS } from '@shadowscan/shared';
-import { Search, X } from 'lucide-react';
+import { ChevronRight, Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PolicyBadge, RiskBandBadge } from '@/components/indicators';
@@ -150,7 +150,7 @@ export function EventsPage(): JSX.Element {
         </div>
 
         {searchParams.get('actor') ? (
-          <span className="text-[11px] text-fg-subtle">
+          <span className="text-meta text-fg-subtle">
             actor <span className="font-mono text-fg-muted">{searchParams.get('actor')}</span>
           </span>
         ) : null}
@@ -179,19 +179,26 @@ export function EventsPage(): JSX.Element {
                     <TableHead>When</TableHead>
                     <TableHead>Individual</TableHead>
                     <TableHead>Service</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Signals</TableHead>
-                    <TableHead className="text-right">Score</TableHead>
-                    <TableHead>Risk</TableHead>
+                    <TableHead className="w-32">Status</TableHead>
+                    <TableHead className="w-32 text-right">Risk</TableHead>
+                    <TableHead className="w-6" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.items.map((event) => (
                     <TableRow
                       key={event.id}
-                      className="cursor-pointer"
-                      onClick={() => setSelected(event)}
+                      /*
+                       * A focusable row that opens a dialog is a button, so it
+                       * says so. Without the role it was a tabbable element with
+                       * no announced purpose, and without a focus ring a keyboard
+                       * user could not see where they were.
+                       */
+                      role="button"
                       tabIndex={0}
+                      aria-label={`Open detection detail for ${event.actor} on ${event.host}`}
+                      className="group cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-accent"
+                      onClick={() => setSelected(event)}
                       onKeyDown={(keyEvent) => {
                         if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
                           keyEvent.preventDefault();
@@ -199,38 +206,47 @@ export function EventsPage(): JSX.Element {
                         }
                       }}
                     >
-                      <TableCell className="whitespace-nowrap text-xs text-fg-muted">
+                      <TableCell className="whitespace-nowrap text-meta text-fg-muted">
                         {formatDateTime(event.occurredAt)}
                       </TableCell>
-                      <TableCell className="text-sm">{event.actor}</TableCell>
+                      <TableCell className="font-mono text-meta">{event.actor}</TableCell>
                       <TableCell>
-                        <p className="text-sm font-medium">
-                          {event.provider?.name ?? 'Unrecognised AI service'}
-                        </p>
-                        <p className="font-mono text-[11px] text-fg-subtle">{event.host}</p>
-                      </TableCell>
-                      <TableCell>
-                        <PolicyBadge policy={event.policy} />
-                      </TableCell>
-                      <TableCell>
-                        {event.sensitiveHits.length === 0 ? (
-                          <span className="text-xs text-fg-subtle">—</span>
-                        ) : (
-                          <div className="flex flex-wrap gap-1">
-                            {event.sensitiveHits.slice(0, 3).map((hit) => (
+                        <div className="flex flex-wrap items-baseline gap-x-2">
+                          <span className="text-body font-medium">
+                            {event.provider?.name ?? 'Unrecognised AI service'}
+                          </span>
+                          <span className="font-mono text-meta text-fg-subtle">{event.host}</span>
+                        </div>
+                        {/* Signals belong with the request whose content they
+                            describe. As their own column they were "—" on nine
+                            rows in ten and left a hole mid-table. */}
+                        {event.sensitiveHits.length > 0 ? (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {event.sensitiveHits.slice(0, 4).map((hit) => (
                               <span
                                 key={hit.class}
-                                className="rounded border border-risk-critical/30 bg-risk-critical/10 px-1.5 py-0.5 text-[10px] text-risk-critical"
+                                className="rounded-[2px] border border-risk-critical/30 bg-risk-critical/10 px-1 text-micro text-risk-critical"
                               >
                                 {hit.class}
                               </span>
                             ))}
                           </div>
-                        )}
+                        ) : null}
                       </TableCell>
-                      <TableCell className="tabular text-right text-sm">{event.riskScore}</TableCell>
                       <TableCell>
-                        <RiskBandBadge band={event.riskBand} />
+                        <PolicyBadge policy={event.policy} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="tabular text-body text-fg-muted">{event.riskScore}</span>
+                          <RiskBandBadge band={event.riskBand} />
+                        </div>
+                      </TableCell>
+                      <TableCell className="w-6 pl-0 pr-2 text-right">
+                        <ChevronRight
+                          className="inline size-3.5 text-fg-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                          aria-hidden
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -268,7 +284,7 @@ function EventDetailDialog({
             </DialogHeader>
 
             <DialogBody className="space-y-5">
-              <dl className="grid grid-cols-2 gap-3 text-xs">
+              <dl className="grid grid-cols-2 gap-3 text-meta">
                 <Field label="Destination" value={`${event.host}${event.path}`} mono />
                 <Field label="Governance status" value={<PolicyBadge policy={event.policy} />} />
                 <Field label="Category" value={event.provider?.category ?? 'unclassified'} />
@@ -276,7 +292,7 @@ function EventDetailDialog({
               </dl>
 
               <div>
-                <p className="mb-2 text-xs font-medium text-fg">
+                <p className="mb-2 text-meta font-medium text-fg">
                   Risk score breakdown ·{' '}
                   <span className="tabular text-fg-muted">{event.riskScore} points</span>
                 </p>
@@ -284,10 +300,10 @@ function EventDetailDialog({
                   {event.riskFactors.map((factor, index) => (
                     <li key={index} className="flex items-start justify-between gap-4 px-3 py-2">
                       <div className="min-w-0">
-                        <p className="text-xs text-fg">{factor.label}</p>
-                        <p className="text-[10px] uppercase tracking-wide text-fg-subtle">{factor.kind}</p>
+                        <p className="text-meta text-fg">{factor.label}</p>
+                        <p className="text-micro uppercase tracking-wide text-fg-subtle">{factor.kind}</p>
                       </div>
-                      <span className="tabular shrink-0 text-xs font-medium text-fg">
+                      <span className="tabular shrink-0 text-meta font-medium text-fg">
                         +{factor.points}
                       </span>
                     </li>
@@ -297,18 +313,18 @@ function EventDetailDialog({
 
               {event.sensitiveHits.length > 0 ? (
                 <div>
-                  <p className="mb-2 text-xs font-medium text-fg">Sensitive content detected</p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <p className="mb-2 text-meta font-medium text-fg">Sensitive content detected</p>
+                  <div className="flex flex-wrap gap-2">
                     {event.sensitiveHits.map((hit) => (
                       <span
                         key={hit.class}
-                        className="rounded border border-risk-critical/30 bg-risk-critical/10 px-2 py-1 text-[11px] text-risk-critical"
+                        className="rounded border border-risk-critical/30 bg-risk-critical/10 px-2 py-1 text-meta text-risk-critical"
                       >
                         {hit.class} × {formatNumber(hit.count)}
                       </span>
                     ))}
                   </div>
-                  <p className="mt-2 text-[11px] leading-relaxed text-fg-subtle">
+                  <p className="mt-2 text-meta leading-relaxed text-fg-subtle">
                     ShadowScan records that content of this class was present. The matched values themselves
                     are discarded at ingestion and are never stored, so they cannot be recovered from here.
                   </p>
@@ -333,8 +349,8 @@ function Field({
 }): JSX.Element {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-wider text-fg-subtle">{label}</dt>
-      <dd className={`mt-1 break-all text-xs text-fg ${mono ? 'font-mono' : ''}`}>{value}</dd>
+      <dt className="text-micro uppercase tracking-wider text-fg-subtle">{label}</dt>
+      <dd className={`mt-1 break-all text-meta text-fg ${mono ? 'font-mono' : ''}`}>{value}</dd>
     </div>
   );
 }

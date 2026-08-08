@@ -40,7 +40,7 @@ export function AuditPage(): JSX.Element {
               <TableBody>
                 {audit.data.items.map((entry) => (
                   <TableRow key={entry.id}>
-                    <TableCell className="whitespace-nowrap text-xs text-fg-muted">
+                    <TableCell className="whitespace-nowrap text-meta text-fg-muted">
                       {formatDateTime(entry.createdAt)}
                     </TableCell>
                     <TableCell>
@@ -48,11 +48,11 @@ export function AuditPage(): JSX.Element {
                         {entry.action}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm">{entry.actorEmail}</TableCell>
-                    <TableCell className="max-w-64 truncate font-mono text-xs text-fg-muted">
+                    <TableCell className="text-body">{entry.actorEmail}</TableCell>
+                    <TableCell className="max-w-64 truncate font-mono text-meta text-fg-muted">
                       {entry.target || '—'}
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-fg-subtle">{entry.ip}</TableCell>
+                    <TableCell className="font-mono text-meta text-fg-subtle">{entry.ip}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

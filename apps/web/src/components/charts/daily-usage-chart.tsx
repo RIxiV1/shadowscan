@@ -27,7 +27,7 @@ export function DailyUsageChart({ data }: { data: DashboardSummary['dailyUsage']
       <PolicyLegend
         items={[
           { policy: 'approved', value: totals.approved, label: 'Approved' },
-          // Not "Blocked": this band stacks unassessed and blocked together, and
+          // Not "Blocked": this band stacks not-assessed and blocked together, and
           // labelling it Blocked contradicts the blocked count in the donut.
           { policy: 'blocked', value: totals.shadow, label: 'Shadow AI' },
         ]}

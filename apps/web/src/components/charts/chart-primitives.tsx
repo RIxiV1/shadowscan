@@ -63,11 +63,11 @@ export function ChartTooltip({
 }): JSX.Element {
   return (
     <div className="pointer-events-none min-w-40 rounded-[5px] border border-line-strong bg-overlay/95 px-3 py-2 shadow-xl shadow-black/60 backdrop-blur-sm">
-      <p className="mb-1.5 text-xs font-medium text-fg">{title}</p>
+      <p className="mb-1.5 text-meta font-medium text-fg">{title}</p>
       <div className="space-y-1">
         {rows.map((row) => (
-          <div key={row.label} className="flex items-center justify-between gap-4 text-xs">
-            <span className="flex items-center gap-1.5 text-fg-muted">
+          <div key={row.label} className="flex items-center justify-between gap-4 text-meta">
+            <span className="flex items-center gap-2 text-fg-muted">
               {row.colour ? (
                 <span
                   className="size-2 shrink-0 rounded-[2px]"
@@ -81,7 +81,7 @@ export function ChartTooltip({
           </div>
         ))}
       </div>
-      {footer ? <div className="mt-1.5 border-t border-line pt-1.5 text-[11px] text-fg-subtle">{footer}</div> : null}
+      {footer ? <div className="mt-1.5 border-t border-line pt-1.5 text-meta text-fg-subtle">{footer}</div> : null}
     </div>
   );
 }
@@ -101,7 +101,7 @@ export function PolicyLegend({
       {items.map(({ policy, value, label }) => {
         const Icon = POLICY_ICON[policy];
         return (
-          <li key={policy} className="flex items-center gap-1.5 text-[11px] text-fg-muted">
+          <li key={policy} className="flex items-center gap-2 text-meta text-fg-muted">
             <span
               className="size-2 shrink-0 rounded-[1px]"
               style={{ backgroundColor: POLICY_FILL[policy] }}

@@ -152,8 +152,8 @@ export function RegistryPage(): JSX.Element {
               {providers.data.map((provider) => (
                 <TableRow key={provider.id}>
                   <TableCell>
-                    <p className="text-[13px]">{provider.name}</p>
-                    <p className="text-[11px] text-fg-subtle">
+                    <p className="text-body">{provider.name}</p>
+                    <p className="text-meta text-fg-subtle">
                       {provider.vendor} · {provider.category}
                       {provider.trainsOnUserData ? ' · trains on submitted data' : ''}
                     </p>
@@ -163,20 +163,20 @@ export function RegistryPage(): JSX.Element {
                       {provider.domains.slice(0, 3).map((domain) => (
                         <span
                           key={domain}
-                          className="rounded border border-line bg-elevated px-1.5 py-0.5 font-mono text-[10px] text-fg-muted"
+                          className="rounded border border-line bg-elevated px-1.5 py-0.5 font-mono text-micro text-fg-muted"
                         >
                           {domain}
                         </span>
                       ))}
                       {provider.domains.length > 3 ? (
-                        <span className="px-1 py-0.5 text-[10px] text-fg-subtle">
+                        <span className="px-1 py-0.5 text-micro text-fg-subtle">
                           +{provider.domains.length - 3}
                         </span>
                       ) : null}
                     </div>
                   </TableCell>
-                  <TableCell className="text-[11px] text-fg-muted">{provider.dataRegion}</TableCell>
-                  <TableCell className="tabular text-right text-[13px]">{provider.riskWeight}</TableCell>
+                  <TableCell className="text-meta text-fg-muted">{provider.dataRegion}</TableCell>
+                  <TableCell className="tabular text-right text-body">{provider.riskWeight}</TableCell>
                   <TableCell>
                     {isAdmin ? (
                       <Select
@@ -299,7 +299,7 @@ function CreateProviderDialog({
             <DialogTitle>Add an AI service</DialogTitle>
             <DialogDescription>
               Register a tool the built-in catalogue does not cover — an internal LLM gateway, a
-              regional vendor, or a service you saw flagged as unassessed.
+              regional vendor, or a service you saw flagged as not assessed.
             </DialogDescription>
           </DialogHeader>
 
@@ -338,7 +338,7 @@ function CreateProviderDialog({
                 placeholder="acme.ai, chat.acme.ai"
                 aria-invalid={Boolean(error?.fieldError('domains'))}
               />
-              <p className="text-[11px] text-fg-subtle">
+              <p className="text-meta text-fg-subtle">
                 Bare hostnames, comma or newline separated. Matching is suffix-based, so
                 <span className="font-mono"> acme.ai </span>
                 also covers every subdomain.
@@ -411,12 +411,12 @@ function CreateProviderDialog({
                   checked={form.trainsOnUserData}
                   onCheckedChange={(checked) => setForm({ ...form, trainsOnUserData: checked })}
                 />
-                <span className="text-xs text-fg-muted">Trains on submitted data</span>
+                <span className="text-meta text-fg-muted">Trains on submitted data</span>
               </label>
             </div>
 
             {error ? (
-              <p role="alert" className="text-xs text-risk-critical">
+              <p role="alert" className="text-meta text-risk-critical">
                 {error.message}
               </p>
             ) : null}

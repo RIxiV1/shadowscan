@@ -58,7 +58,7 @@ export function ReportDetailPage(): JSX.Element {
   }
 
   const summary = report.summary;
-  const unmanagedShare =
+  const shadowShare =
     summary.aiRequests === 0 ? 0 : Math.round((summary.shadowAiRequests / summary.aiRequests) * 100);
 
   return (
@@ -82,12 +82,12 @@ export function ReportDetailPage(): JSX.Element {
       />
 
       <Card className="mb-4">
-        <CardContent className="flex flex-wrap items-center gap-8 pt-5">
+        <CardContent className="flex flex-wrap items-center gap-6 pt-5">
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wider text-fg-subtle">Risk score</p>
+            <p className="text-meta font-medium uppercase tracking-wider text-fg-subtle">Risk score</p>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="tabular text-3xl font-semibold leading-none">{report.score}</span>
-              <span className="text-sm text-fg-subtle">/ 100</span>
+              <span className="tabular text-hero font-semibold leading-none">{report.score}</span>
+              <span className="text-body text-fg-subtle">/ 100</span>
               <RiskBandBadge band={report.band} className="ml-1" />
             </div>
           </div>
@@ -95,7 +95,7 @@ export function ReportDetailPage(): JSX.Element {
           <dl className="grid flex-1 grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
             <Metric label="Log rows" value={formatNumber(summary.totalEvents)} />
             <Metric label="AI requests" value={formatNumber(summary.aiRequests)} />
-            <Metric label="Shadow AI" value={`${formatNumber(summary.shadowAiRequests)} (${unmanagedShare}%)`} />
+            <Metric label="Shadow AI" value={`${formatNumber(summary.shadowAiRequests)} (${shadowShare}%)`} />
             <Metric label="Approved" value={formatNumber(summary.approvedRequests)} />
             <Metric label="People" value={formatNumber(summary.uniqueActors)} />
             <Metric label="Services" value={formatNumber(summary.uniqueProviders)} />
@@ -107,7 +107,7 @@ export function ReportDetailPage(): JSX.Element {
       <Card className="mb-4">
         <CardHeader>
           <CardTitle>Recommended actions</CardTitle>
-          <p className="text-xs text-fg-subtle">
+          <p className="text-meta text-fg-subtle">
             Produced by deterministic rules over the numbers above — no language model is involved, so the
             same period always yields the same findings.
           </p>
@@ -120,9 +120,9 @@ export function ReportDetailPage(): JSX.Element {
             >
               <div className="mb-1 flex items-center gap-2">
                 <RiskBandBadge band={recommendation.severity} />
-                <p className="text-sm font-medium text-fg">{recommendation.title}</p>
+                <p className="text-body font-medium text-fg">{recommendation.title}</p>
               </div>
-              <p className="text-xs leading-relaxed text-fg-muted">{recommendation.detail}</p>
+              <p className="max-w-[80ch] text-meta leading-relaxed text-fg-muted">{recommendation.detail}</p>
             </div>
           ))}
         </CardContent>
@@ -144,11 +144,11 @@ export function ReportDetailPage(): JSX.Element {
             <TableBody>
               {report.topProviders.map((provider) => (
                 <TableRow key={provider.key}>
-                  <TableCell className="text-sm font-medium">{provider.name}</TableCell>
+                  <TableCell className="text-body font-medium">{provider.name}</TableCell>
                   <TableCell>
                     <PolicyBadge policy={provider.policy} />
                   </TableCell>
-                  <TableCell className="tabular text-right text-sm">
+                  <TableCell className="tabular text-right text-body">
                     {formatNumber(provider.requests)}
                   </TableCell>
                 </TableRow>
@@ -172,8 +172,8 @@ export function ReportDetailPage(): JSX.Element {
             <TableBody>
               {report.topActors.map((actor) => (
                 <TableRow key={actor.actor}>
-                  <TableCell className="text-sm font-medium">{actor.actor}</TableCell>
-                  <TableCell className="tabular text-right text-sm text-fg-muted">
+                  <TableCell className="text-body font-medium">{actor.actor}</TableCell>
+                  <TableCell className="tabular text-right text-body text-fg-muted">
                     {formatNumber(actor.requests)}
                   </TableCell>
                   <TableCell>
@@ -192,8 +192,8 @@ export function ReportDetailPage(): JSX.Element {
 function Metric({ label, value }: { label: string; value: string }): JSX.Element {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-wider text-fg-subtle">{label}</dt>
-      <dd className="tabular mt-0.5 text-sm font-medium text-fg">{value}</dd>
+      <dt className="text-micro uppercase tracking-wider text-fg-subtle">{label}</dt>
+      <dd className="tabular mt-0.5 text-body font-medium text-fg">{value}</dd>
     </div>
   );
 }

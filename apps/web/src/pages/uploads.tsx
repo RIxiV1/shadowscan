@@ -88,10 +88,10 @@ export function UploadsPage(): JSX.Element {
             )}
 
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] text-fg">
+              <p className="text-body text-fg">
                 {createUpload.isPending ? 'Parsing and scoring' : 'Drop a log file here'}
               </p>
-              <p className="text-[11px] text-fg-subtle">
+              <p className="text-meta text-fg-subtle">
                 CSV, TSV, JSON, NDJSON, TXT, LOG · 10 MB · 50,000 rows
               </p>
             </div>
@@ -158,8 +158,8 @@ export function UploadsPage(): JSX.Element {
                           <CheckCircle2 className="size-3.5 shrink-0 text-risk-low" aria-label="Completed" />
                         )}
                         <div className="min-w-0">
-                          <p className="truncate text-[13px]">{upload.filename}</p>
-                          <p className="text-[11px] text-fg-subtle">
+                          <p className="truncate text-body">{upload.filename}</p>
+                          <p className="text-meta text-fg-subtle">
                             {formatBytes(upload.sizeBytes)}
                             {upload.rowsRejected > 0
                               ? ` · ${formatNumber(upload.rowsRejected)} rows rejected`
@@ -168,7 +168,7 @@ export function UploadsPage(): JSX.Element {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs text-fg-muted">{upload.format}</TableCell>
+                    <TableCell className="text-meta text-fg-muted">{upload.format}</TableCell>
                     <TableCell className="tabular text-right text-fg-muted">
                       {formatNumber(upload.rowsParsed)}
                     </TableCell>
@@ -178,7 +178,7 @@ export function UploadsPage(): JSX.Element {
                         {formatNumber(upload.shadowAiRequests)}
                       </span>
                     </TableCell>
-                    <TableCell className="text-xs text-fg-muted" title={formatDateTime(upload.createdAt)}>
+                    <TableCell className="text-meta text-fg-muted" title={formatDateTime(upload.createdAt)}>
                       {formatRelative(upload.createdAt)}
                     </TableCell>
                     {isAdmin ? (
@@ -237,7 +237,7 @@ function UploadResultPanel({
       <CardHeader className="flex-row items-center justify-between">
         <div>
           <CardTitle>Ingestion complete — {upload.filename}</CardTitle>
-          <p className="mt-1 text-xs text-fg-subtle">
+          <p className="mt-1 text-meta text-fg-subtle">
             {formatNumber(upload.rowsParsed)} rows parsed · {formatNumber(upload.aiRequests)} AI requests ·{' '}
             {formatNumber(upload.shadowAiRequests)} outside policy
           </p>
@@ -249,8 +249,8 @@ function UploadResultPanel({
 
       {upload.errors.length > 0 ? (
         <div className="mx-3 mb-2 rounded-[4px] border-l-2 border-risk-medium/30 bg-risk-medium/5 px-3 py-2">
-          <p className="mb-1 text-xs font-medium text-risk-medium">Parser notices</p>
-          <ul className="space-y-0.5 text-[11px] text-fg-muted">
+          <p className="mb-1 text-meta font-medium text-risk-medium">Parser notices</p>
+          <ul className="space-y-0.5 text-meta text-fg-muted">
             {upload.errors.slice(0, 5).map((message, index) => (
               <li key={index}>{message}</li>
             ))}
@@ -272,10 +272,10 @@ function UploadResultPanel({
             {preview.map((event) => (
               <TableRow key={event.id}>
                 <TableCell>
-                  <p className="text-sm font-medium">{event.provider?.name ?? 'Unrecognised AI service'}</p>
-                  <p className="font-mono text-[11px] text-fg-subtle">{event.host}</p>
+                  <p className="text-body font-medium">{event.provider?.name ?? 'Unrecognised AI service'}</p>
+                  <p className="font-mono text-meta text-fg-subtle">{event.host}</p>
                 </TableCell>
-                <TableCell className="text-sm text-fg-muted">{event.actor}</TableCell>
+                <TableCell className="text-body text-fg-muted">{event.actor}</TableCell>
                 <TableCell>
                   <PolicyBadge policy={event.policy} />
                 </TableCell>

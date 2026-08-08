@@ -150,14 +150,14 @@ export function DashboardPage(): JSX.Element {
           <p className="eyebrow">Organisation risk</p>
 
           <div className="mt-2 flex items-end justify-between gap-3">
-            <div className="flex items-baseline gap-1.5">
+            <div className="flex items-baseline gap-2">
               <span
-                className={cn('tabular text-[44px] font-semibold leading-none', BAND_TEXT[cards.riskBand])}
+                className={cn('tabular text-hero font-semibold leading-none', BAND_TEXT[cards.riskBand])}
                 style={{ textShadow: '0 0 28px currentColor' }}
               >
                 {cards.riskScore}
               </span>
-              <span className="text-[12px] text-fg-subtle">/100</span>
+              <span className="text-meta text-fg-subtle">/100</span>
             </div>
             <RiskBandBadge band={cards.riskBand} className="mb-1" />
           </div>
@@ -171,7 +171,7 @@ export function DashboardPage(): JSX.Element {
 
           <div className="mt-3.5 grid grid-cols-3 gap-3">
             <Meter
-              label="Unmanaged"
+              label="Shadow AI"
               detail={`${shadowShare}%`}
               ratio={shadowShare / 100}
               weight="40%"
@@ -203,11 +203,11 @@ export function DashboardPage(): JSX.Element {
                 <RiskBandBadge band={headline.severity} />
                 <span className="eyebrow">top finding</span>
               </div>
-              <p className="text-[17px] font-semibold leading-snug text-fg">{headline.title}</p>
-              <p className="max-w-3xl text-[12px] leading-relaxed text-fg-muted">{headline.detail}</p>
+              <p className="text-display font-semibold leading-snug text-fg">{headline.title}</p>
+              <p className="max-w-[68ch] text-meta leading-relaxed text-fg-muted">{headline.detail}</p>
             </>
           ) : (
-            <p className="text-[13px] text-fg-muted">No findings for this period.</p>
+            <p className="text-body text-fg-muted">No findings for this period.</p>
           )}
         </div>
       </div>
@@ -236,13 +236,13 @@ export function DashboardPage(): JSX.Element {
         <Card className="flex flex-col">
           <CardHeader>
             <CardTitle>What needs attention</CardTitle>
-            <span className="text-[10px] normal-case tracking-normal text-fg-subtle">
+            <span className="text-micro normal-case tracking-normal text-fg-subtle">
               rule-based, same as the report
             </span>
           </CardHeader>
           <CardContent className="flex-1 p-0">
             {rest.length === 0 ? (
-              <p className="px-3 py-6 text-center text-[12px] text-fg-subtle">
+              <p className="px-3 py-6 text-center text-meta text-fg-subtle">
                 Nothing further to action for this period.
               </p>
             ) : (
@@ -255,12 +255,12 @@ export function DashboardPage(): JSX.Element {
                   )}
                 >
                   <div className="flex items-baseline gap-2">
-                    <span className={cn('text-[10px] font-semibold uppercase', BAND_TEXT[finding.severity])}>
+                    <span className={cn('text-micro font-semibold uppercase', BAND_TEXT[finding.severity])}>
                       {finding.severity}
                     </span>
-                    <p className="text-[13px] font-medium text-fg">{finding.title}</p>
+                    <p className="text-body font-medium text-fg">{finding.title}</p>
                   </div>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-fg-subtle">{finding.detail}</p>
+                  <p className="mt-0.5 max-w-[80ch] text-meta leading-relaxed text-fg-subtle">{finding.detail}</p>
                 </div>
               ))
             )}
@@ -292,7 +292,7 @@ export function DashboardPage(): JSX.Element {
         <Card>
           <CardHeader>
             <CardTitle>Services in use</CardTitle>
-            <Link to="/registry" className="text-[10px] normal-case tracking-normal text-accent hover:underline">
+            <Link to="/registry" className="text-micro normal-case tracking-normal text-accent hover:underline">
               registry
             </Link>
           </CardHeader>
@@ -306,7 +306,7 @@ export function DashboardPage(): JSX.Element {
             <CardTitle>Highest-risk individuals</CardTitle>
             <Link
               to="/events?band=critical"
-              className="flex items-center gap-1 text-[10px] normal-case tracking-normal text-accent hover:underline"
+              className="flex items-center gap-1 text-micro normal-case tracking-normal text-accent hover:underline"
             >
               investigate
               <ArrowRight className="size-3" />
@@ -333,7 +333,7 @@ export function DashboardPage(): JSX.Element {
                     <TableCell>
                       <Link
                         to={`/events?actor=${encodeURIComponent(actor.actor)}`}
-                        className="font-mono text-[12px] hover:text-accent hover:underline"
+                        className="font-mono text-meta hover:text-accent hover:underline"
                       >
                         {actor.actor}
                       </Link>

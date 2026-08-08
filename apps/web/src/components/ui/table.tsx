@@ -9,7 +9,7 @@ export const Table = forwardRef<HTMLTableElement, HTMLAttributes<HTMLTableElemen
     <div className="w-full overflow-x-auto">
       <table
         ref={ref}
-        className={cn('zebra w-full caption-bottom border-collapse text-[13px]', className)}
+        className={cn('zebra w-full caption-bottom border-collapse text-body', className)}
         {...props}
       />
     </div>
@@ -46,7 +46,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLT
     <th
       ref={ref}
       className={cn(
-        'sticky top-0 z-10 border-b border-line bg-surface px-3 py-1.5 text-left text-[10px] font-semibold uppercase tracking-wider text-fg-subtle',
+        'sticky top-0 z-10 border-b border-line bg-surface px-3 py-1.5 text-left text-micro font-semibold uppercase tracking-wider text-fg-subtle',
         className,
       )}
       {...props}

@@ -34,10 +34,10 @@ export function StatCard({
   return (
     <div className="min-w-0 flex-1 border-line px-3 py-2.5 not-first:border-l">
       <p className="eyebrow truncate">{label}</p>
-      <p className={cn('tabular mt-1.5 text-[22px] font-semibold leading-none', TONE[tone])}>
+      <p className={cn('tabular mt-1.5 text-stat font-semibold leading-none', TONE[tone])}>
         {typeof value === 'number' ? formatNumber(value) : value}
       </p>
-      <div className="mt-1.5 flex h-3 items-center gap-1.5 text-[11px] leading-none">
+      <div className="mt-1.5 flex h-3 items-center gap-2 text-meta leading-none">
         {trend !== undefined ? <Trend trend={trend} invert={invertTrend} /> : null}
         {hint ? <span className="truncate text-fg-subtle">{hint}</span> : null}
       </div>
@@ -54,7 +54,7 @@ function Trend({ trend, invert }: { trend: number | null; invert: boolean }): JS
   const Icon = rising ? ArrowUp : ArrowDown;
 
   return (
-    <span className={cn('flex items-center gap-0.5', bad ? 'text-risk-high' : 'text-risk-low')}>
+    <span className={cn('flex items-center gap-1', bad ? 'text-risk-high' : 'text-risk-low')}>
       <Icon className="size-3" aria-hidden />
       <span className="tabular">{formatPercent(Math.abs(trend))}</span>
     </span>

@@ -12,12 +12,10 @@ export function PolicyDonut({ data }: { data: DashboardSummary['policyBreakdown'
     .filter((slice) => slice.requests > 0);
 
   const total = slices.reduce((sum, slice) => sum + slice.requests, 0);
-  const unmanaged = (byPolicy.get('unknown') ?? 0) + (byPolicy.get('blocked') ?? 0);
-  const unmanagedShare = total === 0 ? 0 : (unmanaged / total) * 100;
 
   if (total === 0) {
     return (
-      <p className="py-10 text-center text-xs text-fg-subtle">
+      <p className="py-10 text-center text-meta text-fg-subtle">
         No AI requests were detected in this period.
       </p>
     );
@@ -49,11 +47,19 @@ export function PolicyDonut({ data }: { data: DashboardSummary['policyBreakdown'
           </PieChart>
         </ResponsiveContainer>
 
-        {/* The hero number. Aria-hidden because the legend below states the same
-            values as text, and a screen reader should hear them once. */}
+        {/*
+          The centre labels the WHOLE, not one of the parts.
+          It used to repeat the shadow-AI percentage, which the score panel's
+          driver bar already states about 400px to the left at similar visual
+          weight. A donut centre restating one slice is the classic version of
+          this mistake; the total is what the ring actually adds up to.
+
+          Aria-hidden because the legend below states every value as text and a
+          screen reader should hear them once.
+        */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center" aria-hidden>
-          <span className="tabular text-2xl font-semibold text-fg">{formatPercent(unmanagedShare)}</span>
-          <span className="mt-0.5 text-[10px] uppercase tracking-wider text-fg-subtle">Unmanaged</span>
+          <span className="tabular text-stat font-semibold text-fg">{formatNumber(total)}</span>
+          <span className="mt-0.5 text-micro uppercase tracking-wider text-fg-subtle">Requests</span>
         </div>
       </div>
 

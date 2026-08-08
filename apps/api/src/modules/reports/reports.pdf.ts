@@ -158,7 +158,7 @@ function drawSummary(doc: Doc, report: RiskReportDto): void {
       tone: report.summary.sensitiveHits > 0 ? 'critical' : 'low',
     },
     {
-      label: 'Unmanaged share',
+      label: 'Shadow AI share',
       value:
         report.summary.aiRequests === 0
           ? '—'

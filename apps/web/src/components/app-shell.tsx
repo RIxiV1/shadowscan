@@ -79,7 +79,7 @@ export function AppShell(): JSX.Element {
         <div className="flex h-10 items-center justify-between gap-2 border-b border-line px-3">
           <div className="flex items-center gap-2">
             <ShieldHalf className="size-4 text-accent" aria-hidden />
-            <span className="text-[13px] font-semibold tracking-tight">ShadowScan</span>
+            <span className="text-body font-semibold tracking-tight">ShadowScan</span>
           </div>
           <Button
             variant="ghost"
@@ -103,7 +103,7 @@ export function AppShell(): JSX.Element {
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      'flex items-center gap-2 border-l-2 py-1.5 pl-[10px] pr-3 text-[13px]',
+                      'flex items-center gap-2 border-l-2 py-1.5 pl-[10px] pr-3 text-body',
                       isActive
                         ? 'border-accent bg-elevated font-medium text-fg'
                         : 'border-transparent text-fg-muted hover:bg-elevated/60 hover:text-fg',
@@ -119,13 +119,13 @@ export function AppShell(): JSX.Element {
         </nav>
 
         <div className="border-t border-line px-3 py-2">
-          <p className="truncate text-[12px] text-fg">{user?.name}</p>
+          <p className="truncate text-meta text-fg">{user?.name}</p>
           <div className="mt-0.5 flex items-center justify-between gap-2">
             <span className="eyebrow truncate">{user?.role}</span>
             <button
               type="button"
               onClick={signOut}
-              className="flex items-center gap-1 text-[11px] text-fg-subtle hover:text-fg"
+              className="flex items-center gap-1 text-meta text-fg-subtle hover:text-fg"
             >
               <LogOut className="size-3" aria-hidden />
               Sign out
@@ -145,9 +145,9 @@ export function AppShell(): JSX.Element {
           >
             <Menu />
           </Button>
-          <span className="text-[11px] text-fg-subtle">ShadowScan</span>
-          <span className="text-[11px] text-fg-subtle">/</span>
-          <span className="text-[11px] text-fg-muted">{current?.label ?? 'Console'}</span>
+          <span className="text-meta text-fg-subtle">ShadowScan</span>
+          <span className="text-meta text-fg-subtle">/</span>
+          <span className="text-meta text-fg-muted">{current?.label ?? 'Console'}</span>
         </header>
 
         <main className="mx-auto w-full max-w-[1600px] px-4 py-3">

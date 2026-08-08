@@ -90,26 +90,26 @@ export function ReportsPage(): JSX.Element {
                 {reports.data.items.map((report) => (
                   <TableRow key={report.id}>
                     <TableCell>
-                      <Link to={`/reports/${report.id}`} className="text-sm font-medium hover:text-accent hover:underline">
+                      <Link to={`/reports/${report.id}`} className="text-body font-medium hover:text-accent hover:underline">
                         {report.title}
                       </Link>
-                      <p className="text-[11px] text-fg-subtle">
+                      <p className="text-meta text-fg-subtle">
                         Generated {formatDateTime(report.createdAt)}
                         {report.generatedBy ? ` by ${report.generatedBy.name}` : ''}
                       </p>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap text-xs text-fg-muted">
+                    <TableCell className="whitespace-nowrap text-meta text-fg-muted">
                       {formatDate(report.periodStart)} – {formatDate(report.periodEnd)}
                     </TableCell>
-                    <TableCell className="tabular text-right text-sm">
+                    <TableCell className="tabular text-right text-body">
                       {formatNumber(report.summary.aiRequests)}
                     </TableCell>
-                    <TableCell className="tabular text-right text-sm">
+                    <TableCell className="tabular text-right text-body">
                       {formatNumber(report.summary.shadowAiRequests)}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className="tabular text-sm font-medium">{report.score}</span>
+                        <span className="tabular text-body font-medium">{report.score}</span>
                         <RiskBandBadge band={report.band} />
                       </div>
                     </TableCell>

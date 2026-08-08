@@ -23,17 +23,42 @@
 
   --color-fg: #e7e9ef;
   --color-fg-muted: #949bab;
-  --color-fg-subtle: #646b7c;
+  /*
+   * 5.03:1 on surface, 4.68:1 on elevated. The previous #646b7c measured 3.54
+   * and 3.29, which fails AA - and this token carries every small label, every
+   * help string and all secondary table text, so it was the least legible colour
+   * in the product doing the most work.
+   */
+  --color-fg-subtle: #7c8496;
 
   /* Restrained blue. Links, focus, active nav, selected rows. Nothing else. */
   --color-accent: #5590d8;
   --color-accent-soft: #16283d;
   --color-accent-fg: #0a0b0d;
 
-  --color-risk-low: #3fb27f;
-  --color-risk-medium: #d19a3e;
-  --color-risk-high: #dd7b45;
-  --color-risk-critical: #d9564f;
+  /*
+   * Risk ramp, chosen by search rather than by eye: 1470 candidate combinations
+   * were scored on pairwise OKLab separation and contrast against both dark
+   * surfaces. This set is the only family that clears dE 15 on every pair while
+   * holding 4.5:1 - worst pair is high/critical at 16.8. The shipped set before
+   * it measured 7.9 between medium and high, which meant those two badges were
+   * effectively the same colour in a table.
+   *
+   * Yellow being the brightest step is deliberate and conventional: hazard
+   * signage and traffic lights both do it, and lightness then falls monotonically
+   * from medium (0.88) through high (0.74) to critical (0.65), so severity reads
+   * as "getting darker and redder".
+   *
+   * The honest limitation: no four-step green-to-red ramp can be made
+   * colour-blind-safe by hue selection. The best CVD separation available across
+   * all 1470 candidates was dE 6.2. Colour therefore never carries risk band on
+   * its own anywhere in this interface - every indicator pairs it with the band
+   * name, a number, or both.
+   */
+  --color-risk-low: #34d399;
+  --color-risk-medium: #ffd43b;
+  --color-risk-high: #ea9250;
+  --color-risk-critical: #f43f5e;
 
   /*
    * Chart fills are a separate, darker set from the badge colours above. Text is
@@ -53,6 +78,36 @@
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  /*
+   * The type scale. Seven steps, each with a job:
+   *
+   *   micro    eyebrow labels, column headers
+   *   meta     secondary text, help copy, badges
+   *   body     table cells, form controls, default
+   *   title    page headings
+   *   display  the headline finding
+   *   stat     figures in a strip
+   *   hero     the org risk score
+   *
+   * Before this there were eleven sizes reached two different ways - Tailwind's
+   * own text-xs/sm mixed with arbitrary text-[12px] values, so 11, 12 and 13px
+   * were all doing the same job. Use these names; do not reach for a raw size.
+   */
+  --text-micro: 0.625rem;
+  --text-micro--line-height: 1.2;
+  --text-meta: 0.6875rem;
+  --text-meta--line-height: 1.45;
+  --text-body: 0.8125rem;
+  --text-body--line-height: 1.45;
+  --text-title: 0.9375rem;
+  --text-title--line-height: 1.3;
+  --text-display: 1.0625rem;
+  --text-display--line-height: 1.35;
+  --text-stat: 1.375rem;
+  --text-stat--line-height: 1;
+  --text-hero: 2.75rem;
+  --text-hero--line-height: 1;
 
   /* Sharp, but 3px read as brutal. 5px still says console, not toy. */
   --radius-panel: 5px;

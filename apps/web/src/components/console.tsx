@@ -52,7 +52,7 @@ export function StripStat({
   const body = (
     <>
       <span className="eyebrow block truncate">{label}</span>
-      <span className={cn('tabular mt-1 block text-[17px] font-semibold leading-none', TONE[tone])}>
+      <span className={cn('tabular mt-1 block text-display font-semibold leading-none', TONE[tone])}>
         {typeof value === 'number' ? formatNumber(value) : value}
       </span>
     </>
@@ -62,18 +62,29 @@ export function StripStat({
 
   if (!onClick) return <div className={shell}>{body}</div>;
 
+  /*
+   * The clickable variant needs to look clickable. Previously it was a bare
+   * button with a hover background, so nobody would ever discover that the
+   * tallies filter the table below them. Now: a pointer cursor, a persistent
+   * dotted underline on the label as a hint, an accent underline when active,
+   * and a title so the behaviour is stated outright.
+   */
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
+      title={active ? `Clear the ${label.toLowerCase()} filter` : `Filter to ${label.toLowerCase()}`}
       className={cn(
         shell,
-        'relative hover:bg-elevated',
-        active && 'bg-elevated after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-accent',
+        'group relative cursor-pointer hover:bg-elevated focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:ring-inset',
+        'after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:transition-colors',
+        active ? 'bg-elevated after:bg-accent' : 'after:bg-transparent group-hover:after:bg-line-strong',
       )}
     >
-      {body}
+      <span className="pointer-events-none block underline decoration-line-strong decoration-dotted underline-offset-[3px] group-hover:decoration-fg-subtle">
+        {body}
+      </span>
     </button>
   );
 }
@@ -109,8 +120,8 @@ export function Meter({
   return (
     <div className="min-w-0">
       <div className="flex items-baseline justify-between gap-2">
-        <span className="truncate text-[11px] text-fg-muted">{label}</span>
-        <span className="tabular shrink-0 text-[11px] font-medium text-fg">{detail}</span>
+        <span className="truncate text-meta text-fg-muted">{label}</span>
+        <span className="tabular shrink-0 text-meta font-medium text-fg">{detail}</span>
       </div>
       <div className="mt-1 h-[3px] overflow-hidden rounded-full bg-elevated">
         <div
@@ -118,7 +129,7 @@ export function Meter({
           style={{ width: `${Math.round(Math.min(1, Math.max(0, ratio)) * 100)}%` }}
         />
       </div>
-      <span className="mt-1 block text-[10px] text-fg-subtle">{weight} of score</span>
+      <span className="mt-1 block text-micro text-fg-subtle">{weight} of score</span>
     </div>
   );
 }
@@ -128,7 +139,7 @@ export function Toolbar({ children, className }: { children: ReactNode; classNam
   return (
     <div
       className={cn(
-        'raised mb-2 flex flex-wrap items-center gap-1.5 rounded-[5px] border border-line bg-surface px-2 py-1.5',
+        'raised mb-2 flex flex-wrap items-center gap-2 rounded-[5px] border border-line bg-surface px-2 py-1.5',
         className,
       )}
     >

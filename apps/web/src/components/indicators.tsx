@@ -50,7 +50,7 @@ export function ScoreMeter({ score, band }: { score: number; band: RiskBand }): 
 
   return (
     <div className="flex items-center gap-2">
-      <span className="tabular w-6 text-right text-[12px] text-fg">{score}</span>
+      <span className="tabular w-6 text-right text-meta text-fg">{score}</span>
       <div
         className="h-1 w-16 overflow-hidden bg-elevated"
         role="meter"
